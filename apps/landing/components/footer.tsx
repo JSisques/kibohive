@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 
 const Footer = () => {
   return (
@@ -16,14 +15,14 @@ const Footer = () => {
             <h3 className="font-semibold mb-4">Legal</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/terminos" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                <a href="/terminos" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                   Términos y condiciones
-                </Link>
+                </a>
               </li>
               <li>
-                <Link href="/privacidad" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                <a href="/privacidad" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                   Política de privacidad
-                </Link>
+                </a>
               </li>
             </ul>
           </div>
@@ -47,14 +46,6 @@ const Footer = () => {
                 className="text-muted-foreground hover:text-primary transition-colors"
               >
                 𝕏
-              </a>
-              <a
-                href="https://linkedin.com/company/kibohive"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
-              >
-                LinkedIn
               </a>
             </div>
           </div>

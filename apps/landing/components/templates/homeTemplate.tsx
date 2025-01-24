@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Navbar from '../navbar';
 import Footer from '../footer';
+import Image from 'next/legacy/image';
 
 const HomeTemplate = () => {
   const [isAnnual, setIsAnnual] = useState(false);
@@ -84,7 +85,7 @@ const HomeTemplate = () => {
               </div>
               <div className="flex justify-center">
                 <div className="relative w-full max-w-xl aspect-video rounded-xl overflow-hidden border-2 border-primary/10 hover:border-primary/30 transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1">
-                  <img src="/dashboard-preview.png" alt="Dashboard Preview" className="object-cover w-full h-full" />
+                  <Image src="/dashboard-preview.png" alt="Dashboard Preview" layout="fill" objectFit="cover" />
                 </div>
               </div>
             </div>
@@ -165,13 +166,13 @@ const HomeTemplate = () => {
                     </ul>
                   </div>
                   <div className="relative aspect-video rounded-xl overflow-hidden border-2 border-primary/10 hover:border-primary/30 transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5 group-hover:-translate-y-1">
-                    <img src="/feature-1.png" alt="Desglose automático" className="object-cover w-full h-full" />
+                    <Image src="/feature-1.png" alt="Desglose automático" layout="fill" objectFit="cover" />
                   </div>
                 </div>
 
                 <div className="group grid md:grid-cols-2 gap-16 items-center">
                   <div className="order-2 md:order-1 relative aspect-video rounded-xl overflow-hidden border-2 border-primary/10 hover:border-primary/30 transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5 group-hover:-translate-y-1">
-                    <img src="/feature-2.png" alt="Asignación inteligente" className="object-cover w-full h-full" />
+                    <Image src="/feature-2.png" alt="Asignación inteligente" layout="fill" objectFit="cover" />
                   </div>
                   <div className="order-1 md:order-2 space-y-6">
                     <h3 className="text-3xl font-semibold text-primary">Asignación Inteligente de Tareas</h3>
@@ -217,13 +218,13 @@ const HomeTemplate = () => {
                     </ul>
                   </div>
                   <div className="relative aspect-video rounded-xl overflow-hidden border-2 border-primary/10 hover:border-primary/30 transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5 group-hover:-translate-y-1">
-                    <img src="/feature-3.png" alt="Visualización del progreso" className="object-cover w-full h-full" />
+                    <Image src="/feature-3.png" alt="Visualización del progreso" layout="fill" objectFit="cover" />
                   </div>
                 </div>
 
                 <div className="group grid md:grid-cols-2 gap-16 items-center">
                   <div className="order-2 md:order-1 relative aspect-video rounded-xl overflow-hidden border-2 border-primary/10 hover:border-primary/30 transition-all duration-300 hover:shadow-2xl hover:shadow-primary/5 group-hover:-translate-y-1">
-                    <img src="/feature-4.png" alt="Predicción de cuellos de botella" className="object-cover w-full h-full" />
+                    <Image src="/feature-4.png" alt="Predicción de cuellos de botella" layout="fill" objectFit="cover" />
                   </div>
                   <div className="order-1 md:order-2 space-y-6">
                     <h3 className="text-3xl font-semibold text-primary">Prevención Proactiva de Problemas</h3>
