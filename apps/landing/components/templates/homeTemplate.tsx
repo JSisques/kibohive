@@ -290,7 +290,7 @@ const HomeTemplate = () => {
                   </div>
                   <div className="mb-6">
                     <span className="text-4xl font-bold">$0</span>
-                    <span className="text-muted-foreground">/mes</span>
+                    <span className="text-muted-foreground">/usuario/mes</span>
                   </div>
                   <ul className="space-y-4 mb-8 flex-grow">
                     <li className="flex items-center gap-2 text-muted-foreground">
@@ -331,7 +331,7 @@ const HomeTemplate = () => {
                   </div>
                   <div className="mb-6">
                     <span className="text-4xl font-bold">${isAnnual ? prices.basic.annual : prices.basic.monthly}</span>
-                    <span className="text-muted-foreground">/{isAnnual ? 'mes (facturado anualmente)' : 'mes'}</span>
+                    <span className="text-muted-foreground">/usuario/mes{isAnnual ? ' (facturado anualmente)' : ''}</span>
                   </div>
                   <ul className="space-y-4 mb-8 flex-grow">
                     <li className="flex items-center gap-2 text-muted-foreground">
@@ -375,7 +375,7 @@ const HomeTemplate = () => {
                   </div>
                   <div className="mb-6">
                     <span className="text-4xl font-bold">${isAnnual ? prices.pro.annual : prices.pro.monthly}</span>
-                    <span className="text-muted-foreground">/{isAnnual ? 'mes (facturado anualmente)' : 'mes'}</span>
+                    <span className="text-muted-foreground">/usuario/mes{isAnnual ? ' (facturado anualmente)' : ''}</span>
                   </div>
                   <ul className="space-y-4 mb-8 flex-grow">
                     <li className="flex items-center gap-2 text-muted-foreground">
@@ -411,8 +411,8 @@ const HomeTemplate = () => {
                     <p className="text-muted-foreground">Equipo grande</p>
                   </div>
                   <div className="mb-6">
-                    <span className="text-4xl font-bold">${isAnnual ? prices.enterprise.annual : prices.enterprise.monthly}</span>
-                    <span className="text-muted-foreground">/{isAnnual ? 'mes (facturado anualmente)' : 'mes'}</span>
+                    <span className="text-4xl font-bold">A consultar</span>
+                    <span className="text-muted-foreground block mt-2">Precio personalizado según necesidades</span>
                   </div>
                   <ul className="space-y-4 mb-8 flex-grow">
                     <li className="flex items-center gap-2 text-muted-foreground">
