@@ -77,10 +77,11 @@ const HomeTemplate = () => {
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-12 space-y-6 [perspective:1000px] relative z-10">
                 <h1 className="text-7xl font-bold text-primary leading-tight [transform-style:preserve-3d] hover:scale-[1.02] transition-transform">
-                  Organiza tu equipo como nunca antes
+                  Gestiona tu equipo de forma inteligente
                 </h1>
                 <p className="text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                  Desglosa tareas, asigna responsabilidades de manera inteligente y optimiza el rendimiento de tu equipo con IA, todo en un solo lugar
+                  Optimiza el rendimiento de tu equipo con IA: desglose automático de tareas, asignación inteligente y análisis predictivo, todo en
+                  una única plataforma
                 </p>
               </div>
               <div className="flex justify-center">
@@ -98,10 +99,10 @@ const HomeTemplate = () => {
           <div className="container relative mx-auto px-4">
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-20">
-                <h2 className="text-5xl font-bold mb-6 text-primary">La gestión manual de equipos está obsoleta</h2>
+                <h2 className="text-5xl font-bold mb-6 text-primary">La gestión tradicional de equipos te frena</h2>
                 <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                  Los líderes de equipo pierden tiempo valioso en tareas repetitivas mientras luchan por mantener una distribución equitativa del
-                  trabajo
+                  Los líderes de equipo dedican demasiado tiempo a tareas administrativas mientras luchan por mantener a sus equipos productivos y
+                  motivados
                 </p>
               </div>
               <div className="grid md:grid-cols-3 gap-8">
@@ -109,22 +110,22 @@ const HomeTemplate = () => {
                   <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                     <span className="text-3xl">⏰</span>
                   </div>
-                  <h3 className="text-2xl font-semibold mb-4">Tiempo Perdido</h3>
-                  <p className="text-muted-foreground">40% del tiempo de los líderes se desperdicia en planificación y asignación manual de tareas</p>
+                  <h3 className="text-2xl font-semibold mb-4">Pérdida de Productividad</h3>
+                  <p className="text-muted-foreground">Los líderes pierden hasta un 40% de su tiempo en tareas administrativas y de coordinación</p>
                 </div>
                 <div className="group flex flex-col items-center text-center p-8 bg-card/50 backdrop-blur-sm rounded-xl border border-primary/10 hover:border-primary/30 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1">
                   <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                     <span className="text-3xl">⚖️</span>
                   </div>
-                  <h3 className="text-2xl font-semibold mb-4">Distribución Desigual</h3>
-                  <p className="text-muted-foreground">Equipos desequilibrados con miembros sobrecargados mientras otros están subutilizados</p>
+                  <h3 className="text-2xl font-semibold mb-4">Desequilibrio en la Carga</h3>
+                  <p className="text-muted-foreground">Algunos miembros se sobrecargan mientras otros no aprovechan todo su potencial</p>
                 </div>
                 <div className="group flex flex-col items-center text-center p-8 bg-card/50 backdrop-blur-sm rounded-xl border border-primary/10 hover:border-primary/30 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1">
                   <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                     <span className="text-3xl">🎯</span>
                   </div>
-                  <h3 className="text-2xl font-semibold mb-4">Falta de Visibilidad</h3>
-                  <p className="text-muted-foreground">Dificultad para predecir y prevenir cuellos de botella antes de que afecten al equipo</p>
+                  <h3 className="text-2xl font-semibold mb-4">Sin Visibilidad Real</h3>
+                  <p className="text-muted-foreground">Imposibilidad de anticipar y prevenir problemas antes de que impacten en los resultados</p>
                 </div>
               </div>
             </div>
@@ -137,10 +138,9 @@ const HomeTemplate = () => {
           <div className="container relative mx-auto px-4">
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-20">
-                <h2 className="text-5xl font-bold mb-6 text-primary">Automatización inteligente de la gestión</h2>
+                <h2 className="text-5xl font-bold mb-6 text-primary">Gestión inteligente y automatizada</h2>
                 <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                  KiboHive utiliza IA avanzada para transformar la forma en que gestionas tu equipo, eliminando las tareas manuales y optimizando el
-                  rendimiento
+                  KiboHive revoluciona la gestión de equipos con IA avanzada, eliminando tareas rutinarias y maximizando el potencial de cada miembro
                 </p>
               </div>
               <div className="space-y-24">
@@ -257,9 +257,9 @@ const HomeTemplate = () => {
           <div className="container mx-auto px-4">
             <div className="max-w-5xl mx-auto">
               <div className="text-center mb-16">
-                <h2 className="text-4xl font-bold mb-6">Planes flexibles para cada equipo</h2>
+                <h2 className="text-4xl font-bold mb-6">Planes adaptados a tu crecimiento</h2>
                 <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-                  Escoge el plan que mejor se adapte a las necesidades de tu equipo
+                  Elige el plan que mejor se ajuste al tamaño y necesidades de tu equipo
                 </p>
                 <div className="flex items-center justify-center gap-4">
                   <span className={`text-sm ${!isAnnual ? 'text-primary font-medium' : 'text-muted-foreground'}`}>Mensual</span>
@@ -453,9 +453,9 @@ const HomeTemplate = () => {
         <section className="py-24 bg-primary/5" id="waitlist">
           <div className="container mx-auto px-4">
             <div className="max-w-2xl mx-auto text-center">
-              <h2 className="text-3xl font-bold mb-6">Transforma la gestión de tu equipo</h2>
+              <h2 className="text-3xl font-bold mb-6">Lleva tu equipo al siguiente nivel</h2>
               <p className="text-lg text-muted-foreground mb-8">
-                Únete a la lista de espera y sé de los primeros en experimentar el futuro de la gestión de equipos
+                Únete a la lista de espera y sé uno de los primeros en revolucionar la gestión de tu equipo con IA
               </p>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center bg-card/50 backdrop-blur-sm p-2 rounded-xl border border-primary/10">
