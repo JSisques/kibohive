@@ -5,7 +5,10 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "git:commit": "git add . && git commit -m \"📝 Automatic changes\" -m \"✏️ Title: Automated code update\" -m \"📅 Date: $(date '+%Y-%m-%d %H:%M:%S')\" -m \"📝 Modified files: $(git diff --name-only HEAD | sed 's/^/- /')\" || echo '⚠️ No changes to commit'",
+    "git:push": "git push origin $(git rev-parse --abbrev-ref HEAD)",
+    "git:commit-push": "yarn git:commit && yarn git:push"
   },
   "devDependencies": {
     "prettier": "^3.2.5",
