@@ -1,6 +1,10 @@
 import { Resend } from 'resend';
 import { NextResponse } from 'next/server';
 
+if (!process.env.RESEND_API_KEY) {
+  throw new Error('RESEND_API_KEY no está configurada en las variables de entorno');
+}
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: Request) {
@@ -35,6 +39,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: 'Te has unido a la lista de espera correctamente' }, { status: 200 });
   } catch (error) {
     console.error('Error al procesar la solicitud:', error);
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
     return NextResponse.json({ error: 'Error al procesar la solicitud' }, { status: 500 });
   }
 }
