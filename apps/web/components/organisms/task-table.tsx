@@ -5,7 +5,7 @@ import { Table, TableHeader, TableRow, TableHead, TableBody } from '../ui/table'
 import { Input } from '../ui/input';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { Button } from '../ui/button';
-import { ChevronDown, Search, Edit2, Check, X } from 'lucide-react';
+import { ChevronDown, Search, Edit2, Check, X, Plus } from 'lucide-react';
 import { Badge } from '../ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { cn } from '@/lib/utils';
@@ -107,6 +107,15 @@ const TaskTable = () => {
     field: keyof Task;
   } | null>(null);
   const [editValue, setEditValue] = useState('');
+  const [newTask, setNewTask] = useState<Partial<Task>>({
+    title: '',
+    description: '',
+    status: 'por-hacer',
+    assignee: '',
+    epic: '',
+    tags: [],
+    createdAt: new Date().toISOString().split('T')[0],
+  });
 
   // Obtener valores únicos para los filtros
   const uniqueStatuses = Array.from(new Set(tasks.map(task => task.status)));
@@ -134,6 +143,32 @@ const TaskTable = () => {
     setTasks(prev => prev.map(task => (task.id === editingCell.taskId ? { ...task, [editingCell.field]: editValue } : task)));
     setEditingCell(null);
     setEditValue('');
+  };
+
+  const handleCreateTask = () => {
+    if (!newTask.title || !newTask.description || !newTask.assignee) return;
+
+    const task: Task = {
+      id: (tasks.length + 1).toString(),
+      title: newTask.title,
+      description: newTask.description,
+      status: newTask.status || 'por-hacer',
+      assignee: newTask.assignee,
+      epic: newTask.epic || '',
+      tags: newTask.tags || [],
+      createdAt: newTask.createdAt || new Date().toISOString().split('T')[0],
+    };
+
+    setTasks(prev => [...prev, task]);
+    setNewTask({
+      title: '',
+      description: '',
+      status: 'por-hacer',
+      assignee: '',
+      epic: '',
+      tags: [],
+      createdAt: new Date().toISOString().split('T')[0],
+    });
   };
 
   const renderCell = (task: Task, field: keyof Task) => {
@@ -251,8 +286,8 @@ const TaskTable = () => {
   return (
     <div className="space-y-4">
       {/* Filtros */}
-      <div className="flex gap-4 items-center">
-        <div className="relative flex-1">
+      <div className="flex gap-4 items-center flex-wrap">
+        <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Buscar..."
@@ -296,33 +331,132 @@ const TaskTable = () => {
       </div>
 
       {/* Tabla */}
-      <div className="border rounded-lg">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[300px]">Tarea</TableHead>
-              <TableHead className="w-[300px]">Descripción</TableHead>
-              <TableHead>Estado</TableHead>
-              <TableHead>Asignado a</TableHead>
-              <TableHead>Epic</TableHead>
-              <TableHead>Tags</TableHead>
-              <TableHead>Fecha creación</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredTasks.map(task => (
-              <TableRow key={task.id} className="align-top">
-                <TableCell>{renderCell(task, 'title')}</TableCell>
-                <TableCell>{renderCell(task, 'description')}</TableCell>
-                <TableCell>{renderCell(task, 'status')}</TableCell>
-                <TableCell>{renderCell(task, 'assignee')}</TableCell>
-                <TableCell>{renderCell(task, 'epic')}</TableCell>
-                <TableCell>{renderCell(task, 'tags')}</TableCell>
-                <TableCell>{renderCell(task, 'createdAt')}</TableCell>
+      <div className="border rounded-lg overflow-auto">
+        <div className="min-w-[1200px]">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[300px]">Tarea</TableHead>
+                <TableHead className="w-[300px]">Descripción</TableHead>
+                <TableHead>Estado</TableHead>
+                <TableHead>Asignado a</TableHead>
+                <TableHead>Epic</TableHead>
+                <TableHead>Tags</TableHead>
+                <TableHead>Fecha creación</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {filteredTasks.map(task => (
+                <TableRow key={task.id} className="align-top">
+                  <TableCell>{renderCell(task, 'title')}</TableCell>
+                  <TableCell>{renderCell(task, 'description')}</TableCell>
+                  <TableCell>{renderCell(task, 'status')}</TableCell>
+                  <TableCell>{renderCell(task, 'assignee')}</TableCell>
+                  <TableCell>{renderCell(task, 'epic')}</TableCell>
+                  <TableCell>{renderCell(task, 'tags')}</TableCell>
+                  <TableCell>{renderCell(task, 'createdAt')}</TableCell>
+                </TableRow>
+              ))}
+              {/* Nueva fila para crear tarea */}
+              <TableRow className="bg-muted/50">
+                <TableCell>
+                  <Input
+                    placeholder="Título de la tarea"
+                    value={newTask.title}
+                    onChange={e => setNewTask(prev => ({ ...prev, title: e.target.value }))}
+                    className="h-8"
+                  />
+                </TableCell>
+                <TableCell>
+                  <Input
+                    placeholder="Descripción"
+                    value={newTask.description}
+                    onChange={e => setNewTask(prev => ({ ...prev, description: e.target.value }))}
+                    className="h-8"
+                  />
+                </TableCell>
+                <TableCell>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" className="w-full h-8">
+                        {newTask.status || 'Estado'}
+                        <ChevronDown className="ml-2 h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      {uniqueStatuses.map(status => (
+                        <DropdownMenuItem key={status} onClick={() => setNewTask(prev => ({ ...prev, status }))}>
+                          {status}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+                <TableCell>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" className="w-full h-8">
+                        {MOCK_USERS.find(u => u.id === newTask.assignee)?.name || 'Asignar a'}
+                        <ChevronDown className="ml-2 h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      {MOCK_USERS.map(user => (
+                        <DropdownMenuItem key={user.id} onClick={() => setNewTask(prev => ({ ...prev, assignee: user.id }))}>
+                          <div className="flex items-center gap-2">
+                            <Avatar className="h-6 w-6">
+                              <AvatarImage src={user.avatar} alt={user.name} />
+                              <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            {user.name}
+                          </div>
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+                <TableCell>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" className="w-full h-8">
+                        {newTask.epic || 'Seleccionar épica'}
+                        <ChevronDown className="ml-2 h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      {uniqueEpics.map(epic => (
+                        <DropdownMenuItem key={epic} onClick={() => setNewTask(prev => ({ ...prev, epic }))}>
+                          {epic}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+                <TableCell>
+                  <Input
+                    placeholder="Tags (separados por coma)"
+                    value={newTask.tags?.join(', ')}
+                    onChange={e => setNewTask(prev => ({ ...prev, tags: e.target.value.split(',').map(tag => tag.trim()) }))}
+                    className="h-8"
+                  />
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="date"
+                      value={newTask.createdAt}
+                      onChange={e => setNewTask(prev => ({ ...prev, createdAt: e.target.value }))}
+                      className="h-8"
+                    />
+                    <Button size="sm" onClick={handleCreateTask} className="h-8">
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
       </div>
     </div>
   );

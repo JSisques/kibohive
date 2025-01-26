@@ -76,7 +76,7 @@ const TaskPage = () => {
   };
 
   return (
-    <div className="container py-6">
+    <div className="container">
       {/* Breadcrumb */}
       <div className="flex items-center justify-between mb-6">
         <Link href={`/${team}`} className="flex items-center gap-1 hover:text-foreground text-sm text-muted-foreground">

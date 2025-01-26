@@ -2,7 +2,9 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import Providers from '@/provider';
-import { AppSidebar } from '@/components/app-sidebar';
+
+import { Inter } from 'next/font/google';
+import TaskSidebar from '@/components/organisms/app-sidebar';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -12,6 +14,11 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
 });
 
 export const metadata: Metadata = {
@@ -26,10 +33,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${inter.variable} ${geistMono.variable} antialiased`}>
         <Providers>
-          <AppSidebar />
-          <main className="p-6 w-full flex flex-col gap-4">{children}</main>
+          <TaskSidebar /> <main className="p-6 w-full flex flex-col gap-4">{children}</main>
         </Providers>
       </body>
     </html>
