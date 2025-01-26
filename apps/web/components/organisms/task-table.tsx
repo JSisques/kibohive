@@ -331,18 +331,18 @@ const TaskTable = () => {
       </div>
 
       {/* Tabla */}
-      <div className="border rounded-lg overflow-auto">
-        <div className="min-w-[1200px]">
+      <div className="border rounded-lg overflow-auto w-full">
+        <div className="w-full">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[300px]">Tarea</TableHead>
-                <TableHead className="w-[300px]">Descripción</TableHead>
-                <TableHead>Estado</TableHead>
-                <TableHead>Asignado a</TableHead>
-                <TableHead>Epic</TableHead>
-                <TableHead>Tags</TableHead>
-                <TableHead>Fecha creación</TableHead>
+                <TableHead className="w-[20%]">Tarea</TableHead>
+                <TableHead className="w-[20%]">Descripción</TableHead>
+                <TableHead className="w-[10%]">Estado</TableHead>
+                <TableHead className="w-[12%]">Asignado a</TableHead>
+                <TableHead className="w-[10%]">Epic</TableHead>
+                <TableHead className="w-[15%]">Tags</TableHead>
+                <TableHead className="w-[13%]">Fecha creación</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

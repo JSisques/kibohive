@@ -21,6 +21,8 @@ import {
   GitPullRequest,
   ChevronDown,
   Building2,
+  Table,
+  SquareChartGantt,
 } from 'lucide-react';
 
 import {
@@ -40,6 +42,7 @@ import {
 } from '@/components/ui/sidebar';
 
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { useTeam } from '@/context/team-context';
 
 const TaskSidebar = () => {
   const [selectedTeam, setSelectedTeam] = React.useState({
@@ -47,6 +50,8 @@ const TaskSidebar = () => {
     name: 'Mi Equipo',
     icon: '🚀',
   });
+
+  const { currentTeam, setCurrentTeam } = useTeam();
 
   return (
     <Sidebar>
@@ -107,7 +112,7 @@ const TaskSidebar = () => {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <a href="/dashboard">
+                  <a href={`/${currentTeam}/dashboard`}>
                     <Home className="mr-2 h-4 w-4" />
                     <span>Panel Principal</span>
                   </a>
@@ -124,7 +129,7 @@ const TaskSidebar = () => {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <a href="/epics">
+                  <a href={`/${currentTeam}/epics`}>
                     <Layers className="mr-2 h-4 w-4" />
                     <span>Épicas</span>
                   </a>
@@ -132,15 +137,7 @@ const TaskSidebar = () => {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <a href="/initiatives">
-                    <Briefcase className="mr-2 h-4 w-4" />
-                    <span>Iniciativas</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="/tasks">
+                  <a href={`/${currentTeam}/tasks`}>
                     <ListTodo className="mr-2 h-4 w-4" />
                     <span>Tareas</span>
                   </a>
@@ -157,7 +154,7 @@ const TaskSidebar = () => {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <a href="/board">
+                  <a href={`/${currentTeam}/kanban`}>
                     <Kanban className="mr-2 h-4 w-4" />
                     <span>Tablero Kanban</span>
                   </a>
@@ -165,7 +162,15 @@ const TaskSidebar = () => {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <a href="/calendar">
+                  <a href={`/${currentTeam}/table`}>
+                    <Table className="mr-2 h-4 w-4" />
+                    <span>Tabla</span>
+                  </a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <a href={`/${currentTeam}/calendar`}>
                     <Calendar className="mr-2 h-4 w-4" />
                     <span>Calendario</span>
                   </a>
@@ -173,9 +178,9 @@ const TaskSidebar = () => {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <a href="/workflow">
-                    <GitPullRequest className="mr-2 h-4 w-4" />
-                    <span>Flujo de Trabajo</span>
+                  <a href={`/${currentTeam}/timeline`}>
+                    <SquareChartGantt className="mr-2 h-4 w-4" />
+                    <span>Cronograma</span>
                   </a>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -190,7 +195,7 @@ const TaskSidebar = () => {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <a href="/teams">
+                  <a href={`/${currentTeam}/teams`}>
                     <Users className="mr-2 h-4 w-4" />
                     <span>Equipos</span>
                   </a>
@@ -198,7 +203,7 @@ const TaskSidebar = () => {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <a href="/members">
+                  <a href={`/${currentTeam}/members`}>
                     <UserCircle className="mr-2 h-4 w-4" />
                     <span>Miembros</span>
                   </a>
@@ -206,7 +211,7 @@ const TaskSidebar = () => {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <a href="/workload">
+                  <a href={`/${currentTeam}/workload`}>
                     <BarChart2 className="mr-2 h-4 w-4" />
                     <span>Carga de Trabajo</span>
                   </a>
@@ -223,17 +228,9 @@ const TaskSidebar = () => {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <a href="/metrics">
+                  <a href={`/${currentTeam}/metrics`}>
                     <LineChart className="mr-2 h-4 w-4" />
                     <span>Métricas</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="/objectives">
-                    <Target className="mr-2 h-4 w-4" />
-                    <span>Objetivos</span>
                   </a>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -264,7 +261,7 @@ const TaskSidebar = () => {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <a href="/logout">
+                  <a href="#">
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Cerrar Sesión</span>
                   </a>

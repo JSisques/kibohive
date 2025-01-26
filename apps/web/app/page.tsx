@@ -1,10 +1,4 @@
-import TaskCard from '@/components/molecules/tasks/task-card';
-import { Kanban } from '@/components/organisms/kanban';
-import TaskTable from '@/components/organisms/task-table';
-import { Calendar } from '@/components/organisms/calendar';
-import { Timeline } from '@/components/organisms/timeline';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';

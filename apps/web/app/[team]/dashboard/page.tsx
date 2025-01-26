@@ -16,7 +16,7 @@ import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
-const TeamSettingsPage = () => {
+const DashboardPage = () => {
   const { team } = useParams();
   const [isEpicModalOpen, setIsEpicModalOpen] = React.useState(false);
   const [isInviteModalOpen, setIsInviteModalOpen] = React.useState(false);
@@ -468,4 +468,4 @@ const TeamSettingsPage = () => {
   );
 };
 
-export default TeamSettingsPage;
+export default DashboardPage;
