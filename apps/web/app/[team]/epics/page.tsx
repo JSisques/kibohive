@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Search, Plus, Sparkles, Calendar, ListTodo, Users } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
-import EpicModal from '@/components/organisms/epic-modal';
+import { EpicModal } from '@/components/organisms/epic-modal';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
 
@@ -197,7 +197,7 @@ const EpicsPage = () => {
         </Table>
       </div>
 
-      <EpicModal isOpen={showEpicModal} onClose={() => setShowEpicModal(false)} onSubmit={handleCreateEpic} />
+      <EpicModal isOpen={showEpicModal} onClose={() => setShowEpicModal(false)} />
 
       <Dialog open={showAiDialog} onOpenChange={setShowAiDialog}>
         <DialogContent>

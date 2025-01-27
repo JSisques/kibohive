@@ -86,7 +86,6 @@ export const Calendar = () => {
   const handlePrevMonth = () => setCurrentDate(prev => addMonths(prev, -1));
   const handleNextMonth = () => setCurrentDate(prev => addMonths(prev, 1));
 
-  // Obtener todos los días del mes actual
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(monthStart);
   const calendarStart = startOfWeek(monthStart, { weekStartsOn: 1 });
@@ -144,7 +143,7 @@ export const Calendar = () => {
 
   return (
     <>
-      <div className="w-full bg-background rounded-lg border">
+      <div className="w-full  bg-background rounded-lg border">
         {/* Header con controles */}
         <div className="flex items-center justify-between p-4 border-b">
           <div className="flex items-center gap-2">

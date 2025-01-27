@@ -1,12 +1,14 @@
 'use client';
 
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import TaskCard from '../molecules/tasks/task-card';
-import { Plus } from 'lucide-react';
+import { Plus, Search, X, ChevronDown } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { cn } from '@/lib/utils';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Badge } from '../ui/badge';
 
 type KanbanColumn = {
   id: string;
@@ -77,6 +79,46 @@ export const Kanban = () => {
   const [editingColumnId, setEditingColumnId] = useState<string | null>(null);
   const [newTaskTitle, setNewTaskTitle] = useState('');
 
+  // Nuevos estados para búsqueda y filtros
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [assigneeFilter, setAssigneeFilter] = useState<string>('all');
+  const [epicFilter, setEpicFilter] = useState<string>('all');
+
+  // Obtener listas únicas para los filtros
+  const uniqueAssignees = useMemo(() => {
+    const assignees = new Set<string>();
+    columns.forEach(column => {
+      column.tasks.forEach(task => {
+        if (task.assignee) assignees.add(task.assignee);
+      });
+    });
+    return Array.from(assignees);
+  }, [columns]);
+
+  const uniqueEpics = useMemo(() => {
+    const epics = new Set<string>();
+    columns.forEach(column => {
+      column.tasks.forEach(task => {
+        if (task.epic) epics.add(task.epic);
+      });
+    });
+    return Array.from(epics);
+  }, [columns]);
+
+  // Filtrar tareas
+  const getFilteredTasks = (tasks: Task[]) => {
+    return tasks.filter(task => {
+      const matchesSearch =
+        task.title.toLowerCase().includes(searchQuery.toLowerCase()) || task.description.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesStatus = statusFilter === 'all' || task.status === statusFilter;
+      const matchesAssignee = assigneeFilter === 'all' || task.assignee === assigneeFilter;
+      const matchesEpic = epicFilter === 'all' || task.epic === epicFilter;
+
+      return matchesSearch && matchesStatus && matchesAssignee && matchesEpic;
+    });
+  };
+
   const onDragEnd = (result: any) => {
     const { source, destination } = result;
 
@@ -145,79 +187,157 @@ export const Kanban = () => {
   };
 
   return (
-    <div className="flex gap-4 h-full overflow-x-auto">
-      <DragDropContext onDragEnd={onDragEnd}>
-        {columns.map(column => (
-          <div key={column.id} className="flex-shrink-0 bg-background border rounded-lg w-[350px] min-h-[500px] flex flex-col">
-            {/* Header de la columna */}
-            <div className="p-4 border-b">
-              <h2 className="font-semibold text-lg text-foreground">{column.title}</h2>
-            </div>
+    <div className="space-y-4">
+      {/* Filtros */}
+      <div className="flex gap-4 items-center flex-wrap">
+        <div className="relative flex-1 min-w-[200px]">
+          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input placeholder="Buscar..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-8" />
+        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="min-w-[150px] max-w-[200px] truncate">
+              <span className="truncate">Estado {statusFilter !== 'all' && `(${statusFilter})`}</span>
+              <ChevronDown className="ml-2 h-4 w-4 flex-shrink-0" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => setStatusFilter('all')}>Todos los estados</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setStatusFilter('por-hacer')}>Por hacer</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setStatusFilter('en-progreso')}>En progreso</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setStatusFilter('completado')}>Completado</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
-            {/* Contenido de la columna */}
-            <div className="flex-1 p-4">
-              <Droppable droppableId={column.id}>
-                {(provided, snapshot) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                    className={cn('space-y-2 min-h-[200px] transition-colors rounded-md', snapshot.isDraggingOver && 'bg-muted')}
-                  >
-                    {column.tasks.map((task, index) => (
-                      <Draggable key={task.id} draggableId={task.id} index={index}>
-                        {(provided, snapshot) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            className={cn('transition-all', snapshot.isDragging && 'rotate-[2deg] scale-105')}
-                          >
-                            <TaskCard
-                              id={task.id}
-                              title={task.title}
-                              description={task.description}
-                              status={task.status}
-                              assignee={task.assignee}
-                              epic={task.epic}
-                              tags={task.tags}
-                              createdAt={task.createdAt}
-                            />
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="min-w-[150px] max-w-[200px] truncate">
+              <span className="truncate">Asignado {assigneeFilter !== 'all' && `(${assigneeFilter})`}</span>
+              <ChevronDown className="ml-2 h-4 w-4 flex-shrink-0" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => setAssigneeFilter('all')}>Todos los miembros</DropdownMenuItem>
+            {uniqueAssignees.map(assignee => (
+              <DropdownMenuItem key={assignee} onClick={() => setAssigneeFilter(assignee)}>
+                {assignee}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
 
-              {/* Input para nueva tarea o botón para mostrar input */}
-              {editingColumnId === column.id ? (
-                <div className="mt-2">
-                  <Input
-                    autoFocus
-                    placeholder="Escribe un título para la tarea..."
-                    value={newTaskTitle}
-                    onChange={e => setNewTaskTitle(e.target.value)}
-                    onKeyDown={e => handleKeyPress(e, column.id)}
-                    onBlur={() => handleAddTask(column.id)}
-                    className="w-full"
-                  />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="min-w-[150px] max-w-[200px] truncate">
+              <span className="truncate">Epic {epicFilter !== 'all' && `(${epicFilter})`}</span>
+              <ChevronDown className="ml-2 h-4 w-4 flex-shrink-0" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => setEpicFilter('all')}>Todas las épicas</DropdownMenuItem>
+            {uniqueEpics.map(epic => (
+              <DropdownMenuItem key={epic} onClick={() => setEpicFilter(epic)}>
+                {epic}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        {(statusFilter !== 'all' || assigneeFilter !== 'all' || epicFilter !== 'all') && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => {
+              setStatusFilter('all');
+              setAssigneeFilter('all');
+              setEpicFilter('all');
+            }}
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        )}
+      </div>
+
+      {/* Kanban Board */}
+      <div className="flex gap-4 h-full overflow-x-auto">
+        <DragDropContext onDragEnd={onDragEnd}>
+          {columns.map(column => (
+            <div key={column.id} className="flex-shrink-0 bg-background border rounded-lg w-[350px] min-h-[500px] flex flex-col">
+              {/* Header de la columna */}
+              <div className="p-4 border-b">
+                <div className="flex items-center justify-between">
+                  <h2 className="font-semibold text-lg text-foreground">{column.title}</h2>
+                  <Badge variant="secondary" className="text-xs">
+                    {getFilteredTasks(column.tasks).length}
+                  </Badge>
                 </div>
-              ) : (
-                <Button
-                  variant="ghost"
-                  className="w-full mt-4 justify-start text-muted-foreground hover:bg-muted group h-9"
-                  onClick={() => setEditingColumnId(column.id)}
-                >
-                  <Plus className="w-4 h-4 mr-2 group-hover:text-foreground" />
-                  <span className="text-sm group-hover:text-foreground">Nueva tarea</span>
-                </Button>
-              )}
+              </div>
+
+              {/* Contenido de la columna */}
+              <div className="flex-1 p-4">
+                <Droppable droppableId={column.id}>
+                  {(provided, snapshot) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                      className={cn('space-y-2 min-h-[200px] transition-colors rounded-md', snapshot.isDraggingOver && 'bg-muted')}
+                    >
+                      {getFilteredTasks(column.tasks).map((task, index) => (
+                        <Draggable key={task.id} draggableId={task.id} index={index}>
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              className={cn('transition-all', snapshot.isDragging && 'rotate-[2deg] scale-105')}
+                            >
+                              <TaskCard
+                                id={task.id}
+                                title={task.title}
+                                description={task.description}
+                                status={task.status}
+                                assignee={task.assignee}
+                                epic={task.epic}
+                                tags={task.tags}
+                                createdAt={task.createdAt}
+                              />
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+
+                {/* Input para nueva tarea o botón para mostrar input */}
+                {editingColumnId === column.id ? (
+                  <div className="mt-2">
+                    <Input
+                      autoFocus
+                      placeholder="Escribe un título para la tarea..."
+                      value={newTaskTitle}
+                      onChange={e => setNewTaskTitle(e.target.value)}
+                      onKeyDown={e => handleKeyPress(e, column.id)}
+                      onBlur={() => handleAddTask(column.id)}
+                      className="w-full"
+                    />
+                  </div>
+                ) : (
+                  <Button
+                    variant="ghost"
+                    className="w-full mt-4 justify-start text-muted-foreground hover:bg-muted group h-9"
+                    onClick={() => setEditingColumnId(column.id)}
+                  >
+                    <Plus className="w-4 h-4 mr-2 group-hover:text-foreground" />
+                    <span className="text-sm group-hover:text-foreground">Nueva tarea</span>
+                  </Button>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
-      </DragDropContext>
+          ))}
+        </DragDropContext>
+      </div>
     </div>
   );
 };
