@@ -3,6 +3,8 @@ import { Progress } from '@/components/ui/progress';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Clock, Users, CheckCircle2, AlertCircle } from 'lucide-react';
+import { getServerSideProps } from 'next/dist/build/templates/pages';
+import { GetServerSideProps } from 'next';
 
 const MOCK_TEAMS = [
   {

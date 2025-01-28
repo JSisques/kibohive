@@ -13,6 +13,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Company {
+  id          String    @id @default(uuid())
+  name        String
+  subdomain   String    @unique
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  users       User[]
+  teams       Team[]
+  tasks       Task[]
+  epics       Epic[]
+}
+
 model User {
   id            String    @id @default(uuid())
   email         String    @unique
@@ -20,9 +32,13 @@ model User {
   password      String
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  company       Company   @relation(fields: [companyId], references: [id])
+  companyId     String
   teams         TeamMember[]
   assignedTasks Task[]    @relation("AssignedTo")
   createdTasks  Task[]    @relation("CreatedBy")
+
+  @@unique([email, companyId])
 }
 
 model Team {
@@ -31,6 +47,8 @@ model Team {
   description String?
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
+  company     Company     @relation(fields: [companyId], references: [id])
+  companyId   String
   members     TeamMember[]
   tasks       Task[]
   epics       Epic[]
@@ -58,6 +76,8 @@ model Task {
   dueDate     DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  company     Company   @relation(fields: [companyId], references: [id])
+  companyId   String
   team        Team      @relation(fields: [teamId], references: [id])
   teamId      String
   epic        Epic?     @relation(fields: [epicId], references: [id])
@@ -77,6 +97,8 @@ model Epic {
   endDate     DateTime
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  company     Company   @relation(fields: [companyId], references: [id])
+  companyId   String
   team        Team      @relation(fields: [teamId], references: [id])
   teamId      String
   tasks       Task[]

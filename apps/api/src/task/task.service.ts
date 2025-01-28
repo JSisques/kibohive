@@ -10,29 +10,28 @@ export class TaskService {
   }
 
   async getTasks() {
+    this.logger.log('Entering getTasks()');
     return this.prisma.task.findMany();
   }
 
   async getTaskById(id: string) {
+    this.logger.log('Entering getTaskById()');
     return this.prisma.task.findUnique({
       where: { id },
     });
   }
 
-  async createOrGetTask(createTaskDto: CreateTaskDto) {
-    const task = await this.prisma.task.findFirst({
-      where: {
-        title: createTaskDto.title,
-      },
+  async createTask(createTaskDto: CreateTaskDto) {
+    this.logger.log(`Entering createTask(${createTaskDto.title})`);
+    this.logger.debug(`Task data: ${JSON.stringify(createTaskDto)}`);
+    return this.prisma.task.create({
+      data: createTaskDto,
     });
-    if (!task) {
-      return this.prisma.task.create({
-        data: createTaskDto,
-      });
-    }
   }
 
   async updateTask(id: string, updateTaskDto: UpdateTaskDto) {
+    this.logger.log(`Entering updateTask(${id})`);
+    this.logger.debug(`Task data: ${JSON.stringify(updateTaskDto)}`);
     return this.prisma.task.update({
       where: { id },
       data: updateTaskDto,
@@ -40,6 +39,7 @@ export class TaskService {
   }
 
   async deleteTask(id: string) {
+    this.logger.log(`Entering deleteTask(${id})`);
     return this.prisma.task.delete({
       where: { id },
     });
