@@ -19,7 +19,7 @@ export class CompanyService {
   }
 
   async createCompany(createCompanyDto: CreateCompanyDto) {
-    const company = await this.prisma.company.create({
+    return await this.prisma.company.create({
       data: createCompanyDto,
     });
   }

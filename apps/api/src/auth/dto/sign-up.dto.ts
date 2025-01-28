@@ -1,5 +1,13 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Matches,
+  MinLength,
+  IsBoolean,
+} from 'class-validator';
 
 @ObjectType('SignUp')
 @InputType('SignUpInput')
@@ -17,15 +25,27 @@ export class SignUpDto {
   @Field()
   @IsString()
   @IsNotEmpty()
+  @MinLength(8)
   password: string;
 
   @Field()
   @IsString()
   @IsNotEmpty()
-  companyName: string;
+  @Matches(/^[a-z0-9-]+$/, {
+    message:
+      'El subdominio solo puede contener letras minúsculas, números y guiones',
+  })
+  @MinLength(3)
+  subdomain: string;
 
   @Field()
-  @IsString()
+  @IsBoolean()
   @IsNotEmpty()
-  subdomain: string;
+  isNewCompany: boolean;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  @MinLength(3)
+  companyName?: string;
 }

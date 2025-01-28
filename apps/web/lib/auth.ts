@@ -1,7 +1,7 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { gql } from '@apollo/client';
-import { getClient } from './apollo-client';
+import { graphqlClient } from './apollo-client';
 
 const SignInMutation = gql`
   mutation SignIn($input: SignInDto!) {
@@ -27,8 +27,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
-          const client = getClient();
-          const { data } = await client.mutate({
+          const { data } = await graphqlClient.mutate({
             mutation: SignInMutation,
             variables: {
               input: {

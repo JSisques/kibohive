@@ -76,8 +76,8 @@ type Mutation {
   deleteTask(id: String!): Task!
   deleteTeam(id: String!): Team!
   deleteUser(id: String!): User!
-  signIn(input: CreateUserInput!): User!
-  signUp(input: CreateUserInput!): User!
+  signIn(input: SignInInput!): User!
+  signUp(input: SignUpInput!): User!
   updateCompany(id: String!, input: UpdateCompanyInput!): Company!
   updateEpic(id: String!, input: UpdateEpicInput!): Epic!
   updateTask(id: String!, input: UpdateTaskInput!): Task!
@@ -96,6 +96,22 @@ type Query {
   getTeams: [Team!]!
   getUserById(id: String!): User!
   getUsers: [User!]!
+  isSubdomainAvailable(subdomain: String!): Boolean!
+}
+
+input SignInInput {
+  email: String!
+  password: String!
+  subdomain: String!
+}
+
+input SignUpInput {
+  companyName: String
+  email: String!
+  isNewCompany: Boolean!
+  name: String
+  password: String!
+  subdomain: String!
 }
 
 type Task {
