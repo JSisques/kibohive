@@ -7,9 +7,7 @@ export const SIGN_IN = gql`
         id
         email
         name
-        image
         companyId
-        companyRole
       }
       accessToken
     }
@@ -23,9 +21,7 @@ export const SIGN_UP = gql`
         id
         email
         name
-        image
         companyId
-        companyRole
       }
       accessToken
     }

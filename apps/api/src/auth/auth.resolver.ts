@@ -21,11 +21,10 @@ export class AuthResolver {
     return this.authService.isSubdomainAvailable(subdomain);
   }
 
-  @Mutation(() => UserDto)
-  async signUp(@Args('input') input: SignUpDto): Promise<UserDto> {
+  @Mutation(() => AuthResponseDto)
+  async signUp(@Args('input') input: SignUpDto): Promise<AuthResponseDto> {
     this.logger.log(`Entering signUp(${input.email})`);
-    const { user } = await this.authService.signUp(input);
-    return user;
+    return this.authService.signUp(input);
   }
 
   @Mutation(() => AuthResponseDto)

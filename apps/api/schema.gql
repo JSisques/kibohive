@@ -83,7 +83,7 @@ type Mutation {
   deleteTeam(id: String!): Team!
   deleteUser(id: String!): User!
   signIn(input: SignInInput!): AuthResponseDto!
-  signUp(input: SignUpInput!): User!
+  signUp(input: SignUpInput!): AuthResponseDto!
   updateCompany(id: String!, input: UpdateCompanyInput!): Company!
   updateEpic(id: String!, input: UpdateEpicInput!): Epic!
   updateTask(id: String!, input: UpdateTaskInput!): Task!

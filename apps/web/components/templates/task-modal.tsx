@@ -78,6 +78,8 @@ export function TaskModal({ isOpen, onClose, initialData }: TaskModalProps) {
   const handleSubmit = async () => {
     if (validateForm()) {
       console.log('Company ID', currentCompany?.id);
+      console.log('Team ID', currentTeam?.id);
+      console.log('User ID', session?.user?.id);
       await graphqlClient.mutate({
         mutation: CREATE_TASK,
         variables: {
