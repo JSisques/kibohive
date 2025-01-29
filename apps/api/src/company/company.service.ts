@@ -18,6 +18,13 @@ export class CompanyService {
     return this.prisma.company.findUnique({ where: { id } });
   }
 
+  async getCompanyBySubdomain(subdomain: string) {
+    return this.prisma.company.findUnique({
+      where: { subdomain },
+      include: { teams: true },
+    });
+  }
+
   async createCompany(createCompanyDto: CreateCompanyDto) {
     return await this.prisma.company.create({
       data: createCompanyDto,

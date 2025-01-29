@@ -43,26 +43,48 @@ import {
 
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useTeam } from '@/context/team-context';
+import { useCompany } from '@/context/company-context';
+import { Team } from '@/types';
+import { Select, SelectGroup, SelectContent, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useRouter } from 'next/navigation';
 
 const TaskSidebar = () => {
-  const [selectedTeam, setSelectedTeam] = React.useState({
-    id: 'mi-equipo',
-    name: 'Mi Equipo',
-    icon: '🚀',
+  const router = useRouter();
+  const { currentCompany } = useCompany();
+  const { currentTeam, setCurrentTeam } = useTeam();
+  const [selectedTeam, setSelectedTeam] = React.useState<Team | null>(() => {
+    return currentCompany?.teams.find(team => team.id === currentTeam?.id) || null;
   });
 
-  const { currentTeam, setCurrentTeam } = useTeam();
+  React.useEffect(() => {
+    if (currentTeam) {
+      setSelectedTeam(currentCompany?.teams.find(team => team.id === currentTeam.id) || null);
+    }
+  }, [currentTeam, currentCompany?.teams]);
+
+  const handleTeamChange = (teamId: string) => {
+    const team = currentCompany?.teams.find(t => t.id === teamId);
+    if (!team) return;
+    setSelectedTeam(team);
+    setCurrentTeam(team);
+    router.push(`/${team.name.replace(/\s+/g, '-').toLowerCase()}/dashboard`);
+  };
+
+  const handleNavigation = (path: string) => {
+    if (!currentTeam) return;
+    router.push(`/${currentTeam.name.replace(/\s+/g, '-').toLowerCase()}${path}`);
+  };
 
   return (
     <Sidebar>
       <SidebarHeader className="space-y-4 py-4">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <a href="/" className="flex items-center">
+            <SidebarMenuButton size="lg" onClick={() => router.push('/')}>
+              <div className="flex items-center">
                 <Brain className="mr-2 h-6 w-6" />
-                <span className="font-bold text-xl">KiboHive</span>
-              </a>
+                <span className="font-bold text-xl">{currentCompany?.name}</span>
+              </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -70,37 +92,24 @@ const TaskSidebar = () => {
         {/* Selector de Equipo */}
         <SidebarGroup className="mb-4 p-0">
           <SidebarGroupContent>
-            <Popover>
-              <PopoverTrigger asChild>
-                <button className="w-full flex items-center justify-between p-2 text-sm hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
-                  <div className="flex items-center gap-2">
-                    <Building2 className="h-4 w-4" />
-                    <span>{selectedTeam.name}</span>
-                  </div>
-                  <ChevronDown className="h-4 w-4" />
-                </button>
-              </PopoverTrigger>
-              <PopoverContent className="w-56 p-0">
-                <div className="p-2">
-                  <div className="text-xs font-medium text-muted-foreground py-1">Tus Equipos</div>
-                  {[
-                    { id: 'mi-equipo', name: 'Mi Equipo', icon: '🚀' },
-                    { id: 'desarrollo', name: 'Equipo de Desarrollo', icon: '💻' },
-                    { id: 'marketing', name: 'Equipo de Marketing', icon: '📢' },
-                    { id: 'diseno', name: 'Equipo de Diseño', icon: '🎨' },
-                  ].map(team => (
-                    <button
-                      key={team.id}
-                      className="w-full flex items-center gap-2 px-2 py-1.5 text-sm hover:bg-accent hover:text-accent-foreground rounded-sm"
-                      onClick={() => setSelectedTeam(team)}
-                    >
-                      <span>{team.icon}</span>
-                      <span>{team.name}</span>
-                    </button>
-                  ))}
+            <Select value={currentTeam?.id || undefined} onValueChange={handleTeamChange}>
+              <SelectTrigger className="w-full">
+                <div className="flex items-center gap-2">
+                  <Building2 className="h-4 w-4" />
+                  <SelectValue placeholder="Selecciona un equipo">{selectedTeam?.name || 'Selecciona un equipo'}</SelectValue>
                 </div>
-              </PopoverContent>
-            </Popover>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Tus Equipos</SelectLabel>
+                  {currentCompany?.teams.map(team => (
+                    <SelectItem key={team.id} value={team.id}>
+                      {team.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarHeader>
@@ -111,11 +120,9 @@ const TaskSidebar = () => {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href={`/${currentTeam}/dashboard`}>
-                    <Home className="mr-2 h-4 w-4" />
-                    <span>Panel Principal</span>
-                  </a>
+                <SidebarMenuButton onClick={() => handleNavigation('/dashboard')}>
+                  <Home className="mr-2 h-4 w-4" />
+                  <span>Panel Principal</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -128,19 +135,15 @@ const TaskSidebar = () => {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href={`/${currentTeam}/epics`}>
-                    <Layers className="mr-2 h-4 w-4" />
-                    <span>Épicas</span>
-                  </a>
+                <SidebarMenuButton onClick={() => handleNavigation('/epics')}>
+                  <Layers className="mr-2 h-4 w-4" />
+                  <span>Épicas</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href={`/${currentTeam}/tasks`}>
-                    <ListTodo className="mr-2 h-4 w-4" />
-                    <span>Tareas</span>
-                  </a>
+                <SidebarMenuButton onClick={() => handleNavigation('/tasks')}>
+                  <ListTodo className="mr-2 h-4 w-4" />
+                  <span>Tareas</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -153,35 +156,27 @@ const TaskSidebar = () => {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href={`/${currentTeam}/kanban`}>
-                    <Kanban className="mr-2 h-4 w-4" />
-                    <span>Tablero Kanban</span>
-                  </a>
+                <SidebarMenuButton onClick={() => handleNavigation('/kanban')}>
+                  <Kanban className="mr-2 h-4 w-4" />
+                  <span>Tablero Kanban</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href={`/${currentTeam}/table`}>
-                    <Table className="mr-2 h-4 w-4" />
-                    <span>Tabla</span>
-                  </a>
+                <SidebarMenuButton onClick={() => handleNavigation('/table')}>
+                  <Table className="mr-2 h-4 w-4" />
+                  <span>Tabla</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href={`/${currentTeam}/calendar`}>
-                    <Calendar className="mr-2 h-4 w-4" />
-                    <span>Calendario</span>
-                  </a>
+                <SidebarMenuButton onClick={() => handleNavigation('/calendar')}>
+                  <Calendar className="mr-2 h-4 w-4" />
+                  <span>Calendario</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href={`/${currentTeam}/timeline`}>
-                    <SquareChartGantt className="mr-2 h-4 w-4" />
-                    <span>Cronograma</span>
-                  </a>
+                <SidebarMenuButton onClick={() => handleNavigation('/timeline')}>
+                  <SquareChartGantt className="mr-2 h-4 w-4" />
+                  <span>Cronograma</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -194,27 +189,21 @@ const TaskSidebar = () => {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href={`/${currentTeam}/teams`}>
-                    <Users className="mr-2 h-4 w-4" />
-                    <span>Equipos</span>
-                  </a>
+                <SidebarMenuButton onClick={() => handleNavigation('/teams')}>
+                  <Users className="mr-2 h-4 w-4" />
+                  <span>Equipos</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href={`/${currentTeam}/members`}>
-                    <UserCircle className="mr-2 h-4 w-4" />
-                    <span>Miembros</span>
-                  </a>
+                <SidebarMenuButton onClick={() => handleNavigation('/members')}>
+                  <UserCircle className="mr-2 h-4 w-4" />
+                  <span>Miembros</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href={`/${currentTeam}/workload`}>
-                    <BarChart2 className="mr-2 h-4 w-4" />
-                    <span>Carga de Trabajo</span>
-                  </a>
+                <SidebarMenuButton onClick={() => handleNavigation('/workload')}>
+                  <BarChart2 className="mr-2 h-4 w-4" />
+                  <span>Carga de Trabajo</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -227,11 +216,9 @@ const TaskSidebar = () => {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href={`/${currentTeam}/metrics`}>
-                    <LineChart className="mr-2 h-4 w-4" />
-                    <span>Métricas</span>
-                  </a>
+                <SidebarMenuButton onClick={() => handleNavigation('/metrics')}>
+                  <LineChart className="mr-2 h-4 w-4" />
+                  <span>Métricas</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -244,27 +231,25 @@ const TaskSidebar = () => {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="/settings">
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>Configuración</span>
-                  </a>
+                <SidebarMenuButton onClick={() => router.push('/settings')}>
+                  <Settings className="mr-2 h-4 w-4" />
+                  <span>Configuración</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="/help">
-                    <HelpCircle className="mr-2 h-4 w-4" />
-                    <span>Ayuda</span>
-                  </a>
+                <SidebarMenuButton onClick={() => router.push('/help')}>
+                  <HelpCircle className="mr-2 h-4 w-4" />
+                  <span>Ayuda</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="#">
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Cerrar Sesión</span>
-                  </a>
+                <SidebarMenuButton
+                  onClick={() => {
+                    /* Aquí iría la lógica de logout */
+                  }}
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Cerrar Sesión</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

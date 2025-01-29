@@ -7,6 +7,7 @@ type Company {
   id: String!
   name: String!
   subdomain: String!
+  teams: [Team!]
   updatedAt: DateTime!
 }
 
@@ -88,6 +89,7 @@ type Mutation {
 type Query {
   getCompanies: [Company!]!
   getCompanyById(id: String!): Company!
+  getCompanyBySubdomain(subdomain: String!): Company!
   getEpicById(id: String!): Epic!
   getEpics: [Epic!]!
   getTaskById(id: String!): Task!
@@ -109,9 +111,12 @@ input SignUpInput {
   companyName: String
   email: String!
   isNewCompany: Boolean!
-  name: String
+  name: String!
   password: String!
+  selectedTeam: String
   subdomain: String!
+  teamDescription: String
+  teamName: String
 }
 
 type Task {

@@ -1,3 +1,5 @@
+'use client';
+
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -5,6 +7,11 @@ import { Badge } from '@/components/ui/badge';
 import { Clock, Users, CheckCircle2, AlertCircle } from 'lucide-react';
 import { getServerSideProps } from 'next/dist/build/templates/pages';
 import { GetServerSideProps } from 'next';
+import { usePathname } from 'next/navigation';
+import { graphqlClient } from '@/lib/apollo-client';
+import { getCompanyBySubdomain } from '@/lib/graphql';
+import { useEffect, useState } from 'react';
+import { useCompany } from '@/context/company-context';
 
 const MOCK_TEAMS = [
   {
@@ -64,6 +71,22 @@ const PRIORITY_TASKS = [
 ];
 
 export default function Home() {
+  const [subdomain, setSubdomain] = useState(window.location.hostname);
+  const { currentCompany, setCurrentCompany } = useCompany();
+
+  const fetchCompany = async () => {
+    const company = await graphqlClient.query({
+      query: getCompanyBySubdomain,
+      variables: { subdomain },
+    });
+    setCurrentCompany(company.data.getCompanyBySubdomain);
+  };
+
+  useEffect(() => {
+    fetchCompany();
+  }, [subdomain]);
+
+  console.log('subdomain', subdomain);
   return (
     <div className="space-y-6">
       {/* Resumen de métricas */}

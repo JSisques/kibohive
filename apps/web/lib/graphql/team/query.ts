@@ -1,3 +1,5 @@
+import { getTeamsByCompany } from '../auth/mutations';
+
 export const getTeams = `
   query GetTeams {
     getTeams {
@@ -6,3 +8,4 @@ export const getTeams = `
     }
   }
 `;
+getTeamsByCompany;

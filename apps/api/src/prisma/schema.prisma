@@ -34,6 +34,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   company       Company   @relation(fields: [companyId], references: [id])
   companyId     String
+  companyRole   CompanyRole @default(MEMBER)
   teams         TeamMember[]
   assignedTasks Task[]    @relation("AssignedTo")
   createdTasks  Task[]    @relation("CreatedBy")
@@ -48,7 +49,7 @@ model Team {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   company     Company     @relation(fields: [companyId], references: [id])
-  companyId   String
+  companyId   String      
   members     TeamMember[]
   tasks       Task[]
   epics       Epic[]
@@ -104,6 +105,18 @@ model Epic {
   tasks       Task[]
 }
 
+model Plan {
+  id          String    @id @default(uuid())
+  name        String
+  price       Int
+  maxUsers    Int
+  maxTeams    Int
+  maxEpics    Int
+  maxTasks    Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
 enum Role {
   OWNER
   ADMIN
@@ -128,4 +141,10 @@ enum Priority {
   MEDIUM
   HIGH
   URGENT
+}
+
+enum CompanyRole {
+  OWNER
+  ADMIN
+  MEMBER
 }

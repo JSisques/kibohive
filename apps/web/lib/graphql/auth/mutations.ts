@@ -27,3 +27,23 @@ export const createCompany = gql`
     }
   }
 `;
+
+export const getTeamsByCompany = gql`
+  query GetTeamsByCompany($subdomain: String!) {
+    getTeamsByCompany(subdomain: $subdomain) {
+      id
+      name
+      description
+    }
+  }
+`;
+
+export const createTeam = gql`
+  mutation CreateTeam($input: CreateTeamInput!) {
+    createTeam(input: $input) {
+      id
+      name
+      description
+    }
+  }
+`;
