@@ -4,4 +4,9 @@ export type Task = {
   description: string;
   status: string;
   createdAt: string;
+  companyId: string;
+  teamId: string;
+  epicId: string;
+  assignedToId: string;
+  createdById: string;
 };

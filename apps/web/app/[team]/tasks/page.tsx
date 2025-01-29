@@ -4,11 +4,11 @@ import React, { useState } from 'react';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Search, Plus, Calendar, Check, X } from 'lucide-react';
+import { Search, Plus, Calendar } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { TaskModal } from '@/components/templates/task-modal';
 
 type Task = {
   id: string;
@@ -98,15 +98,8 @@ const TasksPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [priorityFilter, setPriorityFilter] = useState('');
-  const [showCreateDialog, setShowCreateDialog] = useState(false);
-  const [newTask, setNewTask] = useState<Partial<Task>>({
-    title: '',
-    description: '',
-    status: 'pendiente',
-    priority: 'media',
-    dueDate: '',
-    tags: [],
-  });
+  const [showTaskModal, setShowTaskModal] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<Partial<Task> | undefined>(undefined);
 
   const filteredTasks = tasks.filter(task => {
     const matchesSearch =
@@ -118,97 +111,45 @@ const TasksPage = () => {
     return matchesSearch && matchesStatus && matchesPriority;
   });
 
-  const handleCreateTask = () => {
-    if (!newTask.title || !newTask.description) return;
-
+  const handleCreateTask = (taskData: Partial<Task>) => {
     const task: Task = {
       id: (tasks.length + 1).toString(),
-      title: newTask.title,
-      description: newTask.description,
-      status: newTask.status || 'pendiente',
-      priority: newTask.priority || 'media',
+      title: taskData.title || '',
+      description: taskData.description || '',
+      status: taskData.status || 'pendiente',
+      priority: taskData.priority || 'media',
       assignee: MOCK_USERS[0], // Por defecto asignamos al primer usuario
-      dueDate: newTask.dueDate || new Date().toISOString().split('T')[0],
+      dueDate: taskData.dueDate || new Date().toISOString().split('T')[0],
       createdAt: new Date().toISOString().split('T')[0],
-      tags: newTask.tags || [],
+      tags: taskData.tags || [],
     };
 
     setTasks(prev => [...prev, task]);
-    setShowCreateDialog(false);
-    setNewTask({
-      title: '',
-      description: '',
-      status: 'pendiente',
-      priority: 'media',
-      dueDate: '',
-      tags: [],
-    });
+    setShowTaskModal(false);
+    setSelectedTask(undefined);
+  };
+
+  const handleEditTask = (taskId: string) => {
+    const task = tasks.find(t => t.id === taskId);
+    if (task) {
+      setSelectedTask(task);
+      setShowTaskModal(true);
+    }
   };
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Tareas</h1>
-        <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Nueva Tarea
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Crear Nueva Tarea</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4 pt-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Título</label>
-                <Input
-                  placeholder="Título de la tarea"
-                  value={newTask.title}
-                  onChange={e => setNewTask(prev => ({ ...prev, title: e.target.value }))}
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Descripción</label>
-                <Input
-                  placeholder="Descripción de la tarea"
-                  value={newTask.description}
-                  onChange={e => setNewTask(prev => ({ ...prev, description: e.target.value }))}
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Prioridad</label>
-                  <select
-                    className="w-full rounded-md border border-input bg-background px-3 py-2"
-                    value={newTask.priority}
-                    onChange={e => setNewTask(prev => ({ ...prev, priority: e.target.value }))}
-                  >
-                    <option value="baja">Baja</option>
-                    <option value="media">Media</option>
-                    <option value="alta">Alta</option>
-                  </select>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Fecha límite</label>
-                  <Input type="date" value={newTask.dueDate} onChange={e => setNewTask(prev => ({ ...prev, dueDate: e.target.value }))} />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Tags</label>
-                <Input
-                  placeholder="Tags (separados por coma)"
-                  value={newTask.tags?.join(', ')}
-                  onChange={e => setNewTask(prev => ({ ...prev, tags: e.target.value.split(',').map(tag => tag.trim()) }))}
-                />
-              </div>
-              <Button onClick={handleCreateTask} className="w-full" disabled={!newTask.title || !newTask.description}>
-                Crear Tarea
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <Button
+          onClick={() => {
+            setSelectedTask(undefined);
+            setShowTaskModal(true);
+          }}
+        >
+          <Plus className="mr-2 h-4 w-4" />
+          Nueva Tarea
+        </Button>
       </div>
 
       <div className="flex gap-4 items-center flex-wrap">
@@ -258,7 +199,7 @@ const TasksPage = () => {
           </TableHeader>
           <TableBody>
             {filteredTasks.map(task => (
-              <TableRow key={task.id}>
+              <TableRow key={task.id} className="cursor-pointer" onClick={() => handleEditTask(task.id)}>
                 <TableCell>
                   <div className="space-y-1">
                     <div className="font-medium">{task.title}</div>
@@ -300,6 +241,15 @@ const TasksPage = () => {
           </TableBody>
         </Table>
       </div>
+
+      <TaskModal
+        isOpen={showTaskModal}
+        onClose={() => {
+          setShowTaskModal(false);
+          setSelectedTask(undefined);
+        }}
+        initialData={selectedTask}
+      />
     </div>
   );
 };
