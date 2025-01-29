@@ -2,6 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type AuthResponseDto {
+  accessToken: String!
+  user: User!
+}
+
 type Company {
   createdAt: DateTime!
   id: String!
@@ -77,7 +82,7 @@ type Mutation {
   deleteTask(id: String!): Task!
   deleteTeam(id: String!): Team!
   deleteUser(id: String!): User!
-  signIn(input: SignInInput!): User!
+  signIn(input: SignInInput!): AuthResponseDto!
   signUp(input: SignUpInput!): User!
   updateCompany(id: String!, input: UpdateCompanyInput!): Company!
   updateEpic(id: String!, input: UpdateEpicInput!): Epic!

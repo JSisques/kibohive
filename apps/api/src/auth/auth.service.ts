@@ -1,14 +1,24 @@
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import * as bcrypt from 'bcrypt';
 
+interface JwtPayload {
+  sub: string;
+  email: string;
+  companyId: string;
+}
+
 @Injectable()
 export class AuthService {
   private readonly logger;
-  constructor(private readonly prisma: PrismaService) {
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService,
+  ) {
     this.logger = new Logger(AuthService.name);
   }
 
@@ -20,7 +30,7 @@ export class AuthService {
     return !existingCompany;
   }
 
-  async signUp(input: SignUpDto): Promise<User> {
+  async signUp(input: SignUpDto): Promise<{ user: User; accessToken: string }> {
     this.logger.log(`Entering signUp(${input.email})`);
 
     let company;
@@ -96,10 +106,22 @@ export class AuthService {
       }
     }
 
-    return user;
+    // Generar el token JWT
+    const payload: JwtPayload = {
+      sub: user.id,
+      email: user.email,
+      companyId: user.companyId,
+    };
+
+    const accessToken = await this.jwtService.signAsync(payload);
+
+    return {
+      user,
+      accessToken,
+    };
   }
 
-  async signIn(input: SignInDto): Promise<User> {
+  async signIn(input: SignInDto): Promise<{ user: User; accessToken: string }> {
     this.logger.log(`Entering signIn(${input.email})`);
 
     // Buscar la compañía por subdominio
@@ -130,6 +152,33 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    return user;
+    // Generar el token JWT
+    const payload: JwtPayload = {
+      sub: user.id,
+      email: user.email,
+      companyId: user.companyId,
+    };
+
+    const accessToken = await this.jwtService.signAsync(payload);
+
+    return {
+      user,
+      accessToken,
+    };
+  }
+
+  async validateToken(token: string): Promise<User | null> {
+    try {
+      const payload = await this.jwtService.verifyAsync<JwtPayload>(token);
+
+      const user = await this.prisma.user.findUnique({
+        where: { id: payload.sub },
+      });
+
+      return user;
+    } catch (error) {
+      this.logger.error(`Error validating token: ${error.message}`);
+      return null;
+    }
   }
 }

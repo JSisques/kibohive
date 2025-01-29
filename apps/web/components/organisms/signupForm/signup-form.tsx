@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { cn } from '@/lib/utils';
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { graphqlClient } from '@/lib/apollo-client';
-import { signUp, checkSubdomain } from '@/lib/graphql/auth/mutations';
+import { SIGN_UP, checkSubdomain } from '@/lib/graphql/auth/mutations';
 import { getCompanyBySubdomain } from '@/lib/graphql/company/query';
 import { useRouter } from 'next/navigation';
 // Esquemas de validación para cada paso
@@ -163,7 +163,7 @@ export function SignupForm({ className, ...props }: React.ComponentPropsWithoutR
     console.log('Datos completos:', { ...formData, step3: data });
 
     await graphqlClient.mutate({
-      mutation: signUp,
+      mutation: SIGN_UP,
       variables: {
         input: {
           name: formData.step1?.name,
