@@ -18,6 +18,9 @@ export class TaskService {
     this.logger.log('Entering getTaskById()');
     return this.prisma.task.findUnique({
       where: { id },
+      include: {
+        createdBy: true,
+      },
     });
   }
 
@@ -25,6 +28,9 @@ export class TaskService {
     this.logger.log(`Entering getTasksByTeamId(${teamId})`);
     return this.prisma.task.findMany({
       where: { teamId },
+      include: {
+        createdBy: true,
+      },
     });
   }
 

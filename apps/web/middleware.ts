@@ -6,11 +6,23 @@ export async function middleware(request: NextRequest) {
   const token = await getToken({ req: request });
   const isAuthPage = request.nextUrl.pathname.startsWith('/login') || request.nextUrl.pathname.startsWith('/signup');
 
+  // Añadir el pathname a los headers
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set('x-pathname', request.nextUrl.pathname);
+
   if (isAuthPage) {
-    return token ? NextResponse.redirect(new URL('/', request.url)) : NextResponse.next();
+    return token
+      ? NextResponse.redirect(new URL('/', request.url))
+      : NextResponse.next({
+          request: { headers: requestHeaders },
+        });
   }
 
-  return token ? NextResponse.next() : NextResponse.redirect(new URL('/login', request.url));
+  return token
+    ? NextResponse.next({
+        request: { headers: requestHeaders },
+      })
+    : NextResponse.redirect(new URL('/login', request.url));
 }
 
 export const config = {

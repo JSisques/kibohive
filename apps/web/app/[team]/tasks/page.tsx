@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Search, Plus, Calendar } from 'lucide-react';
+import { Search, Plus, Calendar, Loader2 } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { TaskModal } from '@/components/templates/task-modal';
 import { useQuery } from '@apollo/client';
@@ -126,9 +126,14 @@ const TasksPage = () => {
         teamId: currentTeam?.id,
       },
     });
+    console.log('data', JSON.stringify(data.getTasksByTeamId, null, 2));
     setTasks(data.getTasksByTeamId);
     setIsLoading(false);
   };
+
+  useEffect(() => {
+    fetchTasks();
+  }, [currentTeam]);
 
   const handleCreateTask = (taskData: Partial<Task>) => {
     const task: Task = {
@@ -221,46 +226,54 @@ const TasksPage = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredTasks.map(task => (
-              <TableRow key={task.id} className="cursor-pointer" onClick={() => handleEditTask(task.id)}>
-                <TableCell>
-                  <div className="space-y-1">
-                    <div className="font-medium">{task.title}</div>
-                    <div className="text-sm text-muted-foreground">{task.description}</div>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <Badge className={STATUS_COLORS[task.status as keyof typeof STATUS_COLORS]}>{task.status}</Badge>
-                </TableCell>
-                <TableCell>
-                  <Badge className={PRIORITY_COLORS[task.priority as keyof typeof PRIORITY_COLORS]}>{task.priority}</Badge>
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={task.assignee.avatar} alt={task.assignee.name} />
-                      <AvatarFallback>{task.assignee.name.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                    <span>{task.assignee.name}</span>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4" />
-                    {new Date(task.dueDate).toLocaleDateString()}
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="flex gap-1 flex-wrap">
-                    {task.tags.map(tag => (
-                      <Badge key={tag} variant="outline">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center">
+                  <Loader2 className="h-4 w-4 animate-spin" />
                 </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              filteredTasks.map(task => (
+                <TableRow key={task.id} className="cursor-pointer" onClick={() => handleEditTask(task.id)}>
+                  <TableCell>
+                    <div className="space-y-1">
+                      <div className="font-medium">{task.title}</div>
+                      <div className="text-sm text-muted-foreground">{task.description}</div>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Badge className={STATUS_COLORS[task.status as keyof typeof STATUS_COLORS]}>{task.status}</Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Badge className={PRIORITY_COLORS[task.priority as keyof typeof PRIORITY_COLORS]}>{task.priority}</Badge>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={task.assignee.avatar} alt={task.assignee.name} />
+                        <AvatarFallback>{task.assignee.name.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <span>{task.assignee.name}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4" />
+                      {new Date(task.dueDate).toLocaleDateString()}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex gap-1 flex-wrap">
+                      {task.tags.map(tag => (
+                        <Badge key={tag} variant="outline">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </div>

@@ -30,6 +30,11 @@ export class UserDto {
   password: string;
 
   @Field()
+  @IsString()
+  @IsOptional()
+  avatar?: string;
+
+  @Field()
   @IsUUID()
   @IsNotEmpty()
   companyId: string;

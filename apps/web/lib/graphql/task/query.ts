@@ -8,6 +8,12 @@ export const GET_TASKS_BY_TEAM_ID = gql`
       description
       dueDate
       createdById
+      createdBy {
+        id
+        name
+        email
+        avatar
+      }
       teamId
     }
   }

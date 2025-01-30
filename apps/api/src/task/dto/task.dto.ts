@@ -8,6 +8,7 @@ import {
   IsUUID,
 } from 'class-validator';
 import { Priority, TaskStatus } from '@prisma/client';
+import { UserDto } from 'src/user/dto/user.dto';
 
 @ObjectType('Task')
 export class TaskDto {
@@ -71,4 +72,9 @@ export class TaskDto {
   @IsNotEmpty()
   @IsUUID()
   createdById: string;
+
+  @Field(() => UserDto)
+  @IsNotEmpty()
+  @IsUUID()
+  createdBy: UserDto;
 }

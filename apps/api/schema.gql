@@ -129,6 +129,7 @@ type Task {
   assignedToId: String
   companyId: String!
   createdAt: DateTime!
+  createdBy: User!
   createdById: String!
   description: String
   dueDate: DateTime
@@ -176,6 +177,7 @@ input UpdateUserInput {
 }
 
 type User {
+  avatar: String!
   companyId: String!
   createdAt: DateTime!
   email: String!

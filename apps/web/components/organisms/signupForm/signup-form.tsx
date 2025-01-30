@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -12,8 +12,9 @@ import { cn } from '@/lib/utils';
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { graphqlClient } from '@/lib/apollo-client';
 import { SIGN_UP, checkSubdomain } from '@/lib/graphql/auth/mutations';
-import { getCompanyBySubdomain } from '@/lib/graphql/company/query';
+import { GET_COMPANY_BY_SUBDOMAIN } from '@/lib/graphql/company/query';
 import { useRouter } from 'next/navigation';
+import { signIn, useSession } from 'next-auth/react';
 // Esquemas de validación para cada paso
 const step1Schema = z
   .object({
@@ -79,6 +80,7 @@ type Step3Data = z.infer<typeof step3Schema>;
 export function SignupForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
+  const { data: session } = useSession();
   const [formData, setFormData] = useState<{
     step1?: Step1Data;
     step2?: Step2Data;
@@ -129,7 +131,7 @@ export function SignupForm({ className, ...props }: React.ComponentPropsWithoutR
       } else {
         // Si se une a una empresa, cargamos los equipos
         const { data: companyData } = await graphqlClient.query({
-          query: getCompanyBySubdomain,
+          query: GET_COMPANY_BY_SUBDOMAIN,
           variables: {
             subdomain: data.subdomain,
           },
@@ -179,9 +181,18 @@ export function SignupForm({ className, ...props }: React.ComponentPropsWithoutR
       },
     });
 
-    //router.push(`/${formData.step2?.subdomain}`);
-    router.push('/');
+    await signIn('credentials', {
+      email: formData.step1?.email,
+      password: formData.step1?.password,
+      redirect: false,
+    });
   };
+
+  useEffect(() => {
+    if (session?.user.companySubdomain) {
+      router.push(`http://${session.user.companySubdomain}:3000`);
+    }
+  }, [session]);
 
   const goBack = () => {
     setCurrentStep(prev => prev - 1);
@@ -282,7 +293,16 @@ export function SignupForm({ className, ...props }: React.ComponentPropsWithoutR
             <div className="space-y-2">
               <Label htmlFor="subdomain">Subdominio</Label>
               <div className="flex items-center gap-2">
-                <Input id="subdomain" {...step2Form.register('subdomain')} placeholder="mi-empresa" />
+                <Input
+                  id="subdomain"
+                  {...step2Form.register('subdomain')}
+                  placeholder="mi-empresa"
+                  onChange={e => {
+                    const value = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
+                    e.target.value = value;
+                    step2Form.setValue('subdomain', value);
+                  }}
+                />
                 <span className="text-muted-foreground">.kibomanager.com</span>
               </div>
               {step2Form.formState.errors.subdomain && <p className="text-sm text-destructive">{step2Form.formState.errors.subdomain.message}</p>}

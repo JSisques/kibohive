@@ -1,6 +1,6 @@
-import { getTeamsByCompany } from '../auth/mutations';
+import { gql } from 'graphql-tag';
 
-export const getTeams = `
+export const GET_TEAMS = gql`
   query GetTeams {
     getTeams {
       id
@@ -8,4 +8,12 @@ export const getTeams = `
     }
   }
 `;
-getTeamsByCompany;
+
+export const GET_TEAMS_BY_COMPANY_ID = gql`
+  query GetTeamsByCompanyId($companyId: String!) {
+    getTeamsByCompanyId(companyId: $companyId) {
+      id
+      name
+    }
+  }
+`;

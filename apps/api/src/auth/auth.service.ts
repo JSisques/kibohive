@@ -40,7 +40,7 @@ export class AuthService {
       company = await this.prisma.company.create({
         data: {
           name: input.companyName,
-          subdomain: input.subdomain,
+          subdomain: `${input.subdomain.toLowerCase().replace(/[^a-z0-9-]/g, '')}.${process.env.SUBDOMAIN}`,
         },
       });
     } else {
@@ -66,6 +66,7 @@ export class AuthService {
         name: input.name,
         password: hashedPassword,
         companyId: company.id,
+        avatar: `https://avatar.vercel.sh/${input.name}.png`,
       },
       include: {
         company: true,
@@ -76,8 +77,10 @@ export class AuthService {
       // Crear un equipo por defecto solo si es una nueva compañía
       const team = await this.prisma.team.create({
         data: {
-          name: 'Default Team',
-          description: 'Default team created on company registration',
+          name: input.teamName || 'Default Team',
+          description:
+            input.teamDescription ||
+            'Default team created on company registration',
           companyId: company.id,
         },
       });
