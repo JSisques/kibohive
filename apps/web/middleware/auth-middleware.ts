@@ -3,15 +3,30 @@ import { NextResponse } from 'next/server';
 
 export default withAuth(
   function middleware(req) {
-    // Si el usuario está autenticado y trata de acceder a /login o /, redirigir a /dashboard
-    if (req.nextUrl.pathname === '/login' || req.nextUrl.pathname === '/') {
-      return NextResponse.redirect(new URL('/dashboard', req.url));
+    const isAuth = !!req.nextauth.token;
+    const isAuthPage = req.nextUrl.pathname.startsWith('/login');
+
+    if (isAuthPage) {
+      if (isAuth) {
+        return NextResponse.redirect(new URL('/', req.url));
+      }
+      return null;
     }
+
+    if (!isAuth) {
+      let from = req.nextUrl.pathname;
+      if (req.nextUrl.search) {
+        from += req.nextUrl.search;
+      }
+
+      return NextResponse.redirect(new URL(`/login?from=${encodeURIComponent(from)}`, req.url));
+    }
+
     return NextResponse.next();
   },
   {
     callbacks: {
-      authorized: ({ token }) => !!token,
+      authorized: ({ token }) => true, // Manejamos la autorización en el middleware
     },
   },
 );
@@ -22,11 +37,9 @@ export const config = {
     /*
      * Coincide con todas las rutas excepto:
      * 1. /api/auth/* (rutas de NextAuth)
-     * 2. /login (página de inicio de sesión)
-     * 3. / (página de inicio)
-     * 4. /_next/* (archivos estáticos de Next.js)
-     * 5. /favicon.ico, /sitemap.xml, etc.
+     * 2. /_next/* (archivos estáticos de Next.js)
+     * 3. /favicon.ico, /sitemap.xml, etc.
      */
-    '/((?!api|login|_next/static|_next/image|favicon.ico|$).*)',
+    '/((?!api/auth|_next/static|_next/image|favicon.ico).*)',
   ],
 };

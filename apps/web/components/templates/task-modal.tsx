@@ -19,6 +19,7 @@ import { CREATE_TASK } from '@/lib/graphql';
 import { useCompany } from '@/context/company-context';
 import { useTeam } from '@/context/team-context';
 import { useSession } from 'next-auth/react';
+import { useUser } from '@/context/user-context';
 
 interface TaskModalProps {
   isOpen: boolean;
@@ -37,6 +38,7 @@ export function TaskModal({ isOpen, onClose, initialData }: TaskModalProps) {
   const { currentCompany } = useCompany();
   const { currentTeam } = useTeam();
   const { data: session } = useSession();
+  const { currentUser } = useUser();
   const [title, setTitle] = useState(initialData?.title || '');
   const [description, setDescription] = useState(initialData?.description || '');
   const [status, setStatus] = useState(initialData?.status || 'TODO');
@@ -79,7 +81,7 @@ export function TaskModal({ isOpen, onClose, initialData }: TaskModalProps) {
     if (validateForm()) {
       console.log('Company ID', currentCompany?.id);
       console.log('Team ID', currentTeam?.id);
-      console.log('User ID', session?.user?.id);
+      console.log('User ID', currentUser?.id);
       await graphqlClient.mutate({
         mutation: CREATE_TASK,
         variables: {
@@ -92,7 +94,7 @@ export function TaskModal({ isOpen, onClose, initialData }: TaskModalProps) {
             teamId: currentTeam?.id,
             //epicId: '',
             //assignedToId: '',
-            createdById: session?.user?.id,
+            createdById: currentUser?.id,
           },
         },
       });

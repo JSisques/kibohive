@@ -22,3 +22,12 @@ export const getCompanyBySubdomain = gql`
     }
   }
 `;
+
+export const GET_COMPANY_BY_ID = gql`
+  query GetCompanyById($id: String!) {
+    getCompanyById(id: $id) {
+      id
+      name
+    }
+  }
+`;

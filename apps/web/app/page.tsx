@@ -12,6 +12,7 @@ import { graphqlClient } from '@/lib/apollo-client';
 import { getCompanyBySubdomain } from '@/lib/graphql';
 import { useEffect, useState } from 'react';
 import { useCompany } from '@/context/company-context';
+import { useSession } from 'next-auth/react';
 
 const MOCK_TEAMS = [
   {
@@ -71,8 +72,9 @@ const PRIORITY_TASKS = [
 ];
 
 export default function Home() {
+  const { data: session } = useSession();
   const [subdomain, setSubdomain] = useState(window.location.hostname);
-  const { currentCompany, setCurrentCompany } = useCompany();
+  const { setCurrentCompany } = useCompany();
 
   const fetchCompany = async () => {
     const company = await graphqlClient.query({

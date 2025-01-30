@@ -12,16 +12,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getServerSession(authOptions);
-  const subdomain = process.env.NODE_ENV === 'development' ? 'hola.localhost' : process.env.NEXT_PUBLIC_VERCEL_URL || 'localhost';
-
-  const { data } = await graphqlClient.query({
-    query: getCompanyBySubdomain,
-    variables: { subdomain },
-  });
-
-  const company = data?.getCompanyBySubdomain;
-
   return (
     <html lang="en">
       <body className={`${inter.variable} ${geistMono.variable} antialiased`}>

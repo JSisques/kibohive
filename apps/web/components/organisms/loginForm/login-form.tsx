@@ -4,13 +4,16 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { signIn } from 'next-auth/react';
-import { useState } from 'react';
+import { signIn, useSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import Link from 'next/link';
+import { useCompany } from '@/context/company-context';
+import { graphqlClient } from '@/lib/apollo-client';
+import { GET_COMPANY_BY_ID } from '@/lib/graphql';
 
 const loginSchema = z.object({
   email: z.string().email('Email inválido'),
@@ -23,6 +26,9 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
+
+  const { currentCompany } = useCompany();
+  const { data: session } = useSession();
 
   const {
     register,
@@ -43,18 +49,25 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
         redirect: false,
       });
 
+      console.log('result', result);
+
       if (result?.error) {
         setError('Credenciales inválidas');
+        console.log('result', result.error);
         return;
       }
-
-      router.push('/dashboard');
     } catch (error) {
       setError('Ocurrió un error durante el proceso');
     } finally {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (session?.user.companySubdomain) {
+      router.push(`http://${session.user.companySubdomain}:3001`);
+    }
+  }, [session]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={cn('flex flex-col gap-6', className)} {...props}>

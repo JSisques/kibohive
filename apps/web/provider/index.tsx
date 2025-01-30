@@ -3,16 +3,19 @@
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { CompanyProvider } from '@/context/company-context';
 import { TeamProvider } from '@/context/team-context';
+import { UserProvider } from '@/context/user-context';
 import { SessionProvider } from 'next-auth/react';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <CompanyProvider>
-      <TeamProvider>
-        <SessionProvider>
-          <SidebarProvider>{children}</SidebarProvider>
-        </SessionProvider>
-      </TeamProvider>
-    </CompanyProvider>
+    <UserProvider>
+      <CompanyProvider>
+        <TeamProvider>
+          <SessionProvider>
+            <SidebarProvider>{children}</SidebarProvider>
+          </SessionProvider>
+        </TeamProvider>
+      </CompanyProvider>
+    </UserProvider>
   );
 }

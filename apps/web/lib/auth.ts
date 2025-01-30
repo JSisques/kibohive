@@ -3,6 +3,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { gql } from '@apollo/client';
 import { graphqlClient } from './apollo-client';
 import { SIGN_IN } from './graphql/auth/mutations';
+import { useUser } from '@/context/user-context';
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -11,10 +12,9 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         email: { label: 'Email', type: 'email', placeholder: 'tu@email.com' },
         password: { label: 'Contraseña', type: 'password' },
-        subdomain: { label: 'Subdominio', type: 'text' },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password || !credentials?.subdomain) {
+        if (!credentials?.email || !credentials?.password) {
           throw new Error('Por favor, introduce todos los campos requeridos');
         }
 
@@ -25,22 +25,31 @@ export const authOptions: NextAuthOptions = {
               input: {
                 email: credentials.email,
                 password: credentials.password,
-                subdomain: credentials.subdomain,
               },
             },
           });
 
+          console.log('data', JSON.stringify(data, null, 2));
+
           if (data?.signIn) {
-            const { user, accessToken } = data.signIn;
+            const { user, accessToken, companySubdomain } = data.signIn;
+            console.log('user', JSON.stringify(user, null, 2));
             return {
               ...user,
               accessToken,
+              companySubdomain,
             } as User & { accessToken: string };
           }
 
           throw new Error('Credenciales inválidas');
         } catch (error) {
           console.error('Error durante la autenticación:', error);
+          console.error('Error completo:', {
+            message: (error as any).message,
+            networkError: (error as any).networkError,
+            graphQLErrors: (error as any).graphQLErrors,
+            stack: (error as any).stack,
+          });
           throw new Error('Error al iniciar sesión. Por favor, inténtalo de nuevo.');
         }
       },
@@ -60,7 +69,7 @@ export const authOptions: NextAuthOptions = {
         token.email = user.email;
         token.accessToken = (user as any).accessToken;
         token.companyId = user.companyId;
-        token.companyRole = user.companyRole;
+        token.companySubdomain = user.companySubdomain;
       }
       return token;
     },
@@ -68,8 +77,10 @@ export const authOptions: NextAuthOptions = {
       if (token && session.user) {
         session.user.id = token.id;
         session.user.email = token.email;
+        session.user.companyId = token.companyId as string;
         session.user.companyRole = token.companyRole;
         (session as any).accessToken = token.accessToken;
+        session.user.companySubdomain = token.companySubdomain;
       }
       return session;
     },

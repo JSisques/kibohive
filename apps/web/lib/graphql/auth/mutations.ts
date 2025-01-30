@@ -9,6 +9,7 @@ export const SIGN_IN = gql`
         name
         companyId
       }
+      companySubdomain
       accessToken
     }
   }
@@ -23,6 +24,7 @@ export const SIGN_UP = gql`
         name
         companyId
       }
+      companySubdomain
       accessToken
     }
   }

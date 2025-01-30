@@ -47,6 +47,7 @@ import { useCompany } from '@/context/company-context';
 import { Team } from '@/types';
 import { Select, SelectGroup, SelectContent, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useRouter } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 
 const TaskSidebar = () => {
   const router = useRouter();
@@ -245,7 +246,9 @@ const TaskSidebar = () => {
               <SidebarMenuItem>
                 <SidebarMenuButton
                   onClick={() => {
-                    /* Aquí iría la lógica de logout */
+                    signOut({
+                      callbackUrl: '/login',
+                    });
                   }}
                 >
                   <LogOut className="mr-2 h-4 w-4" />

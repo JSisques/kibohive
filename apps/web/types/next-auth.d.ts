@@ -10,6 +10,7 @@ declare module 'next-auth' {
     image: string | null;
     companyId: string;
     companyRole: CompanyRole;
+    companySubdomain: string;
   }
 
   interface Session {
@@ -23,5 +24,7 @@ declare module 'next-auth/jwt' {
     id: string;
     email: string;
     accessToken?: string;
+    companyId: string;
+    companySubdomain: string;
   }
 }

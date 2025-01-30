@@ -4,6 +4,7 @@
 
 type AuthResponseDto {
   accessToken: String!
+  companySubdomain: String!
   user: User!
 }
 
@@ -109,7 +110,6 @@ type Query {
 input SignInInput {
   email: String!
   password: String!
-  subdomain: String!
 }
 
 input SignUpInput {

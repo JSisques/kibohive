@@ -5,11 +5,11 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import * as bcrypt from 'bcrypt';
+import { AuthResponseDto } from './dto/auth-response.dto';
 
 interface JwtPayload {
-  sub: string;
+  id: string;
   email: string;
-  companyId: string;
 }
 
 @Injectable()
@@ -30,7 +30,7 @@ export class AuthService {
     return !existingCompany;
   }
 
-  async signUp(input: SignUpDto): Promise<{ user: User; accessToken: string }> {
+  async signUp(input: SignUpDto): Promise<AuthResponseDto> {
     this.logger.log(`Entering signUp(${input.email})`);
 
     let company;
@@ -66,6 +66,9 @@ export class AuthService {
         name: input.name,
         password: hashedPassword,
         companyId: company.id,
+      },
+      include: {
+        company: true,
       },
     });
 
@@ -108,36 +111,29 @@ export class AuthService {
 
     // Generar el token JWT
     const payload: JwtPayload = {
-      sub: user.id,
+      id: user.id,
       email: user.email,
-      companyId: user.companyId,
     };
 
     const accessToken = await this.jwtService.signAsync(payload);
 
     return {
       user,
+      companySubdomain: user.company?.subdomain || '',
       accessToken,
     };
   }
 
-  async signIn(input: SignInDto): Promise<{ user: User; accessToken: string }> {
+  async signIn(input: SignInDto): Promise<AuthResponseDto> {
     this.logger.log(`Entering signIn(${input.email})`);
-
-    // Buscar la compañía por subdominio
-    const company = await this.prisma.company.findUnique({
-      where: { subdomain: input.subdomain },
-    });
-
-    if (!company) {
-      throw new UnauthorizedException('Company not found');
-    }
 
     // Buscar el usuario por email y compañía
     const user = await this.prisma.user.findFirst({
       where: {
         email: input.email,
-        companyId: company.id,
+      },
+      include: {
+        company: true,
       },
     });
 
@@ -154,15 +150,17 @@ export class AuthService {
 
     // Generar el token JWT
     const payload: JwtPayload = {
-      sub: user.id,
+      id: user.id,
       email: user.email,
-      companyId: user.companyId,
     };
 
     const accessToken = await this.jwtService.signAsync(payload);
 
+    this.logger.debug(`User payload: ${JSON.stringify(payload)}`);
+
     return {
       user,
+      companySubdomain: user.company?.subdomain || '',
       accessToken,
     };
   }
@@ -172,7 +170,7 @@ export class AuthService {
       const payload = await this.jwtService.verifyAsync<JwtPayload>(token);
 
       const user = await this.prisma.user.findUnique({
-        where: { id: payload.sub },
+        where: { id: payload.id },
       });
 
       return user;
