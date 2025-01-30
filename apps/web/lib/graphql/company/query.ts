@@ -9,7 +9,7 @@ export const getCompanies = gql`
   }
 `;
 
-export const getCompanyBySubdomain = gql`
+export const GET_COMPANY_BY_SUBDOMAIN = gql`
   query GetCompanyBySubdomain($subdomain: String!) {
     getCompanyBySubdomain(subdomain: $subdomain) {
       id

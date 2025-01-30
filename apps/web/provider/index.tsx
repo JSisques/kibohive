@@ -6,16 +6,16 @@ import { TeamProvider } from '@/context/team-context';
 import { UserProvider } from '@/context/user-context';
 import { SessionProvider } from 'next-auth/react';
 
-export default function Providers({ children }: { children: React.ReactNode }) {
+export default function Providers({ children, session }: { children: React.ReactNode; session: any }) {
   return (
-    <UserProvider>
-      <CompanyProvider>
-        <TeamProvider>
-          <SessionProvider>
+    <SessionProvider session={session}>
+      <UserProvider>
+        <CompanyProvider>
+          <TeamProvider>
             <SidebarProvider>{children}</SidebarProvider>
-          </SessionProvider>
-        </TeamProvider>
-      </CompanyProvider>
-    </UserProvider>
+          </TeamProvider>
+        </CompanyProvider>
+      </UserProvider>
+    </SessionProvider>
   );
 }

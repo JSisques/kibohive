@@ -9,7 +9,7 @@ import { getServerSideProps } from 'next/dist/build/templates/pages';
 import { GetServerSideProps } from 'next';
 import { usePathname } from 'next/navigation';
 import { graphqlClient } from '@/lib/apollo-client';
-import { getCompanyBySubdomain } from '@/lib/graphql';
+import { GET_COMPANY_BY_SUBDOMAIN } from '@/lib/graphql/company/query';
 import { useEffect, useState } from 'react';
 import { useCompany } from '@/context/company-context';
 import { useSession } from 'next-auth/react';
@@ -72,23 +72,6 @@ const PRIORITY_TASKS = [
 ];
 
 export default function Home() {
-  const { data: session } = useSession();
-  const [subdomain, setSubdomain] = useState(window.location.hostname);
-  const { setCurrentCompany } = useCompany();
-
-  const fetchCompany = async () => {
-    const company = await graphqlClient.query({
-      query: getCompanyBySubdomain,
-      variables: { subdomain },
-    });
-    setCurrentCompany(company.data.getCompanyBySubdomain);
-  };
-
-  useEffect(() => {
-    fetchCompany();
-  }, [subdomain]);
-
-  console.log('subdomain', subdomain);
   return (
     <div className="space-y-6">
       {/* Resumen de métricas */}

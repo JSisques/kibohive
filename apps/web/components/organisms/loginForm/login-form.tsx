@@ -65,7 +65,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
 
   useEffect(() => {
     if (session?.user.companySubdomain) {
-      router.push(`http://${session.user.companySubdomain}:3001`);
+      router.push(`http://${session.user.companySubdomain}:3000`);
     }
   }, [session]);
 

@@ -4,18 +4,20 @@ import TaskSidebar from '@/components/organisms/app-sidebar';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { geistMono, geistSans, inter } from './metadata';
-import { graphqlClient } from '@/lib/apollo-client';
-import { getCompanyBySubdomain } from '@/lib/graphql/company/query';
+import { CompanyInitializer } from '@/components/providers/company-initializer';
 
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getServerSession(authOptions);
+
   return (
     <html lang="en">
       <body className={`${inter.variable} ${geistMono.variable} antialiased`}>
-        <Providers>
+        <Providers session={session}>
+          <CompanyInitializer />
           <TaskSidebar />
           <main className="p-6 w-full flex flex-col gap-4">{children}</main>
         </Providers>
