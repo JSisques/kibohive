@@ -1,8 +1,14 @@
-export const getTasks = `
-  query GetTasks {
-    getTasks {
+import { gql } from '@apollo/client';
+
+export const GET_TASKS_BY_TEAM_ID = gql`
+  query GetTasksByTeamId($teamId: String!) {
+    getTasksByTeamId(teamId: $teamId) {
       id
-      name
+      title
+      description
+      dueDate
+      createdById
+      teamId
     }
   }
 `;

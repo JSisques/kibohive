@@ -21,6 +21,13 @@ export class TaskService {
     });
   }
 
+  async getTasksByTeamId(teamId: string) {
+    this.logger.log(`Entering getTasksByTeamId(${teamId})`);
+    return this.prisma.task.findMany({
+      where: { teamId },
+    });
+  }
+
   async createTask(createTaskDto: CreateTaskDto) {
     this.logger.log(`Entering createTask(${createTaskDto.title})`);
     this.logger.debug(`Task data: ${JSON.stringify(createTaskDto)}`);

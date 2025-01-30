@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,10 @@ import { Badge } from '@/components/ui/badge';
 import { Search, Plus, Calendar } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { TaskModal } from '@/components/templates/task-modal';
+import { useQuery } from '@apollo/client';
+import { GET_TASKS_BY_TEAM_ID } from '@/lib/graphql/task/query';
+import { graphqlClient } from '@/lib/apollo-client';
+import { useTeam } from '@/context/team-context';
 
 type Task = {
   id: string;
@@ -94,12 +98,14 @@ const PRIORITY_COLORS = {
 };
 
 const TasksPage = () => {
-  const [tasks, setTasks] = useState<Task[]>(MOCK_TASKS);
+  const { currentTeam } = useTeam();
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [priorityFilter, setPriorityFilter] = useState('');
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Partial<Task> | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState(false);
 
   const filteredTasks = tasks.filter(task => {
     const matchesSearch =
@@ -110,6 +116,19 @@ const TasksPage = () => {
     const matchesPriority = !priorityFilter || task.priority === priorityFilter;
     return matchesSearch && matchesStatus && matchesPriority;
   });
+
+  const fetchTasks = async () => {
+    setIsLoading(true);
+    console.log('Fetching tasks for team:', currentTeam?.id);
+    const { data } = await graphqlClient.query({
+      query: GET_TASKS_BY_TEAM_ID,
+      variables: {
+        teamId: currentTeam?.id,
+      },
+    });
+    setTasks(data.getTasksByTeamId);
+    setIsLoading(false);
+  };
 
   const handleCreateTask = (taskData: Partial<Task>) => {
     const task: Task = {
@@ -136,6 +155,10 @@ const TasksPage = () => {
       setShowTaskModal(true);
     }
   };
+
+  useEffect(() => {
+    fetchTasks();
+  }, [currentTeam]);
 
   return (
     <div className="space-y-6">

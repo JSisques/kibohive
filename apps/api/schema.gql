@@ -100,6 +100,7 @@ type Query {
   getEpics: [Epic!]!
   getTaskById(id: String!): Task!
   getTasks: [Task!]!
+  getTasksByTeamId(teamId: String!): [Task!]!
   getTeamById(id: String!): Team!
   getTeams: [Team!]!
   getUserById(id: String!): User!
