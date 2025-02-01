@@ -46,7 +46,6 @@ import { SignedOut, SignOutButton, useOrganization } from '@clerk/nextjs';
 const AppSidebar = () => {
   const router = useRouter();
   const { organization } = useOrganization();
-
   return (
     <Sidebar>
       <SidebarHeader className="space-y-4 py-4">
@@ -199,6 +198,7 @@ const AppSidebar = () => {
                   }}
                 >
                   <LogOut className="mr-2 h-4 w-4" />
+                  <SignOutButton />
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

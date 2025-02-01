@@ -1,6 +1,6 @@
-import { ClerkProvider, useUser } from '@clerk/nextjs';
+import { ClerkProvider } from '@clerk/nextjs';
 import './globals.css';
-import AppSidebar from '@/components/organisms/appSidebar/app-sidebar';
+import AuthSidebar from '@/components/organisms/appSidebar/auth-sidebar';
 import { SidebarProvider } from '@/components/ui/sidebar';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -9,7 +9,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <html lang="en">
         <body>
           <SidebarProvider>
-            <AppSidebar />
+            <AuthSidebar />
             <main className={`w-full flex flex-col gap-4 p-4`}>{children}</main>
           </SidebarProvider>
         </body>
