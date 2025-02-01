@@ -1,13 +1,13 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import {
   IsDate,
-  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
   IsUUID,
 } from 'class-validator';
-import { EpicStatus } from '@prisma/client';
+import { CompanyDto } from 'src/company/dto/company.dto';
+import { TaskDto } from 'src/task/dto/task.dto';
 
 @ObjectType('Epic')
 export class EpicDto {
@@ -27,23 +27,6 @@ export class EpicDto {
   description?: string;
 
   @Field()
-  @IsNotEmpty()
-  @IsUUID()
-  companyId: string;
-
-  // @Field(() => EpicStatus)
-  // @IsEnum(EpicStatus)
-  // status: EpicStatus;
-
-  @Field()
-  @IsDate()
-  startDate: Date;
-
-  @Field()
-  @IsDate()
-  endDate: Date;
-
-  @Field()
   @IsDate()
   createdAt: Date;
 
@@ -54,5 +37,15 @@ export class EpicDto {
   @Field()
   @IsNotEmpty()
   @IsUUID()
-  teamId: string;
+  companyId: string;
+
+  @Field(() => CompanyDto)
+  @IsNotEmpty()
+  @IsUUID()
+  company: CompanyDto;
+
+  @Field(() => [TaskDto])
+  @IsNotEmpty()
+  @IsUUID()
+  tasks: TaskDto[];
 }

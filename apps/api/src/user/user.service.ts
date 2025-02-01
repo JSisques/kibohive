@@ -13,31 +13,49 @@ export class UserService {
 
   async getUsers(): Promise<User[]> {
     this.logger.log('Entering getUsers()');
-    return this.prisma.user.findMany();
+    return this.prisma.user.findMany({
+      include: { company: true, tasks: true },
+    });
   }
 
   async getUserById(id: string): Promise<User> {
     this.logger.log(`Entering getUserById(${id})`);
-    return this.prisma.user.findUnique({ where: { id } });
+    return this.prisma.user.findUnique({
+      where: { id },
+      include: { company: true, tasks: true },
+    });
   }
 
   async getUserByEmail(email: string): Promise<User> {
     this.logger.log(`Entering getUserByEmail(${email})`);
-    return this.prisma.user.findUnique({ where: { email } });
+    return this.prisma.user.findUnique({
+      where: { email },
+      include: { company: true, tasks: true },
+    });
   }
 
   async createUser(user: CreateUserDto): Promise<User> {
     this.logger.log(`Entering createUser(${user})`);
-    return this.prisma.user.create({ data: user });
+    return this.prisma.user.create({
+      data: user,
+      include: { company: true, tasks: true },
+    });
   }
 
   async updateUser(id: string, user: UpdateUserDto): Promise<User> {
     this.logger.log(`Entering updateUser(${id}, ${user})`);
-    return this.prisma.user.update({ where: { id }, data: user });
+    return this.prisma.user.update({
+      where: { id },
+      data: user,
+      include: { company: true, tasks: true },
+    });
   }
 
   async deleteUser(id: string): Promise<User> {
     this.logger.log(`Entering deleteUser(${id})`);
-    return this.prisma.user.delete({ where: { id } });
+    return this.prisma.user.delete({
+      where: { id },
+      include: { company: true, tasks: true },
+    });
   }
 }

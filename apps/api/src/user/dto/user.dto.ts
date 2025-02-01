@@ -1,5 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import {
+  IsDate,
   IsEmail,
   IsNotEmpty,
   IsOptional,
@@ -15,6 +16,11 @@ export class UserDto {
   id: string;
 
   @Field()
+  @IsString()
+  @IsNotEmpty()
+  clerkId: string;
+
+  @Field()
   @IsEmail()
   @IsNotEmpty()
   email: string;
@@ -25,23 +31,15 @@ export class UserDto {
   name?: string;
 
   @Field()
-  @IsString()
-  @IsNotEmpty()
-  password: string;
-
-  @Field()
-  @IsString()
-  @IsOptional()
-  avatar?: string;
-
-  @Field()
   @IsUUID()
   @IsNotEmpty()
   companyId: string;
 
   @Field()
+  @IsDate()
   createdAt: Date;
 
   @Field()
+  @IsDate()
   updatedAt: Date;
 }

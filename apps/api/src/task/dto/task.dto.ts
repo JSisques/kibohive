@@ -7,9 +7,9 @@ import {
   IsString,
   IsUUID,
 } from 'class-validator';
-import { Priority, TaskStatus } from '@prisma/client';
 import { UserDto } from 'src/user/dto/user.dto';
-
+import { EpicDto } from 'src/epic/dto/epic.dto';
+import { TaskStatus } from '@prisma/client';
 @ObjectType('Task')
 export class TaskDto {
   @Field()
@@ -28,24 +28,6 @@ export class TaskDto {
   description?: string;
 
   @Field()
-  @IsNotEmpty()
-  @IsUUID()
-  companyId: string;
-
-  //   @Field(() => TaskStatus)
-  //   @IsOptional()
-  //   @IsEnum(TaskStatus)
-  //   status: TaskStatus;
-
-  //   @Field(() => Priority)
-  //   @IsOptional()
-  //   @IsEnum(Priority)
-  //   priority: Priority;
-
-  @Field({ nullable: true })
-  dueDate?: Date;
-
-  @Field()
   @IsDate()
   createdAt: Date;
 
@@ -53,28 +35,33 @@ export class TaskDto {
   @IsDate()
   updatedAt: Date;
 
-  @Field()
-  @IsNotEmpty()
-  @IsUUID()
-  teamId: string;
-
   @Field({ nullable: true })
   @IsOptional()
   @IsUUID()
   epicId?: string;
+
+  @Field(() => EpicDto)
+  @IsNotEmpty()
+  @IsUUID()
+  epic: EpicDto;
 
   @Field({ nullable: true })
   @IsOptional()
   @IsUUID()
   assignedToId?: string;
 
-  @Field()
-  @IsNotEmpty()
-  @IsUUID()
-  createdById: string;
-
   @Field(() => UserDto)
   @IsNotEmpty()
   @IsUUID()
-  createdBy: UserDto;
+  assignedTo: UserDto;
+
+  @Field(() => TaskStatus)
+  @IsNotEmpty()
+  @IsEnum(TaskStatus)
+  status: TaskStatus;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsDate()
+  deletedAt?: Date;
 }

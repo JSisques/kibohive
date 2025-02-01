@@ -17,6 +17,9 @@ export class CompanyDto {
   @Field(() => [TeamDto], { nullable: true })
   teams?: TeamDto[];
 
+  @Field(() => [UserDto], { nullable: true })
+  members?: UserDto[];
+
   @Field()
   @IsString()
   @IsNotEmpty()

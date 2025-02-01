@@ -11,23 +11,29 @@ export class CompanyService {
   }
 
   async getCompanies() {
-    return this.prisma.company.findMany();
+    return this.prisma.company.findMany({
+      include: { epics: true, members: true },
+    });
   }
 
   async getCompanyById(id: string) {
-    return this.prisma.company.findUnique({ where: { id } });
+    return this.prisma.company.findUnique({
+      where: { id },
+      include: { epics: true, members: true },
+    });
   }
 
   async getCompanyBySubdomain(subdomain: string) {
     return this.prisma.company.findUnique({
       where: { subdomain },
-      include: { teams: true },
+      include: { epics: true, members: true },
     });
   }
 
   async createCompany(createCompanyDto: CreateCompanyDto) {
     return await this.prisma.company.create({
       data: createCompanyDto,
+      include: { epics: true, members: true },
     });
   }
 
@@ -35,10 +41,14 @@ export class CompanyService {
     return this.prisma.company.update({
       where: { id },
       data: updateCompanyDto,
+      include: { epics: true, members: true },
     });
   }
 
   async deleteCompany(id: string) {
-    return this.prisma.company.delete({ where: { id } });
+    return this.prisma.company.delete({
+      where: { id },
+      include: { epics: true, members: true },
+    });
   }
 }

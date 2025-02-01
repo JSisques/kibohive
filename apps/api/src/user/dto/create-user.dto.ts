@@ -11,6 +11,11 @@ import {
 @InputType('CreateUserInput')
 export class CreateUserDto {
   @Field()
+  @IsString()
+  @IsNotEmpty()
+  clerkId: string;
+
+  @Field()
   @IsEmail()
   @IsNotEmpty()
   email: string;
@@ -19,11 +24,6 @@ export class CreateUserDto {
   @IsString()
   @IsOptional()
   name?: string;
-
-  @Field()
-  @IsString()
-  @IsNotEmpty()
-  password: string;
 
   @Field()
   @IsUUID()
