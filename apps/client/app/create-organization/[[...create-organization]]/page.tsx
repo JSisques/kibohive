@@ -1,8 +1,8 @@
 import CreateOrganizationPage from '@/components/pages/createOrganization/create-organization';
 import React from 'react';
 
-const CreateCompany = () => {
+const CreateOrganization = () => {
   return <CreateOrganizationPage />;
 };
 
-export default CreateCompany;
+export default CreateOrganization;

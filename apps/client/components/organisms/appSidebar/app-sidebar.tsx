@@ -28,33 +28,42 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubItem,
-  SidebarMenuSubButton,
   SidebarGroup,
   SidebarGroupLabel,
   SidebarGroupContent,
-  SidebarProvider,
 } from '@/components/ui/sidebar';
 
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Select, SelectGroup, SelectContent, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useRouter } from 'next/navigation';
 import { signOut } from 'next-auth/react';
-import { SignedOut, SignOutButton, useOrganization } from '@clerk/nextjs';
+import { SignInButton, SignOutButton, useAuth, useOrganization, UserButton, useUser } from '@clerk/nextjs';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const AppSidebar = () => {
+  const { isSignedIn } = useAuth();
   const router = useRouter();
   const { organization } = useOrganization();
+  const { user } = useUser();
+
+  if (!isSignedIn) {
+    return null;
+  }
+
   return (
     <Sidebar>
       <SidebarHeader className="space-y-4 py-4">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" onClick={() => router.push('/')}>
-              <div className="flex items-center">
-                <Brain className="mr-2 h-6 w-6" />
-                <span className="font-bold text-xl">{organization?.name}</span>
+            <SidebarMenuButton className="h-fit" onClick={() => router.push('/profile')}>
+              <Avatar>
+                <AvatarImage src={user?.imageUrl} />
+                <AvatarFallback>
+                  {user?.firstName?.charAt(0)}
+                  {user?.lastName?.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col">
+                <span>{`${user?.firstName} ${user?.lastName}`}</span>
+                <span>{user?.emailAddresses[0].emailAddress}</span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
