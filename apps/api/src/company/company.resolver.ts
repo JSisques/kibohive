@@ -27,6 +27,11 @@ export class CompanyResolver {
     return this.companyService.getCompanyBySubdomain(subdomain);
   }
 
+  @Query(() => CompanyDto)
+  async getCompanyByClerkId(@Args('clerkId') clerkId: string) {
+    return this.companyService.getCompanyByClerkId(clerkId);
+  }
+
   @Mutation(() => CompanyDto)
   async createCompany(@Args('input') input: CreateCompanyDto) {
     return this.companyService.createCompany(input);

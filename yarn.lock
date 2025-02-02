@@ -57,7 +57,7 @@
 
 "@apollo/client@^3.12.8":
   version "3.12.8"
-  resolved "https://registry.npmjs.org/@apollo/client/-/client-3.12.8.tgz"
+  resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.12.8.tgz#99670386104f77ceba03f7e3dc0d91813f03cd3c"
   integrity sha512-053z5eCM7zNl81Lxs/SqHv8e+x3sszrtmGS2TNuPW0ZTZzmKATMsIsoblx1Kt0E67Ze3jb99JSPiQHG9ozGc3g==
   dependencies:
     "@graphql-typed-document-node/core" "^3.1.1"

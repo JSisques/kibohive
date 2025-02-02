@@ -12,9 +12,10 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 model User {
   id          String    @id @default(uuid())
-  clerkId     String    @unique // ID de Clerk
+  clerkId     String    @unique @default("") // ID de Clerk
   email       String    @unique
   name        String?
   createdAt   DateTime  @default(now())
@@ -26,8 +27,9 @@ model User {
 
 model Company {
   id          String    @id @default(uuid())
+  clerkId     String    @unique @default("") // ID de Clerk
   name        String
-  subdomain   String    @unique @map("idx_subdomain")
+  subdomain   String    @unique @default("") @map("idx_subdomain")
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   members     User[]
@@ -43,8 +45,6 @@ model Epic {
   company     Company   @relation(fields: [companyId], references: [id])
   companyId   String
   tasks       Task[]
-
-
 }
 
 model Task {
@@ -54,12 +54,13 @@ model Task {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   epic        Epic      @relation(fields: [epicId], references: [id])
-  epicId      String  @map("idx_epic")
-  assignedTo  User?      @relation("AssignedTasks", fields: [assignedToId], references: [id])
-  assignedToId String? @map("idx_assignedTo")
+  epicId      String    @default("") @map("idx_epic")
+  assignedTo  User?     @relation("AssignedTasks", fields: [assignedToId], references: [id])
+  assignedToId String?  @map("idx_assignedTo")
   status      TaskStatus @default(TODO)
-deletedAt DateTime?
+  deletedAt   DateTime?
 }
+
 enum TaskStatus {
   TODO
   IN_PROGRESS

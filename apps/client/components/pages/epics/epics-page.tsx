@@ -1,11 +1,11 @@
 'use client';
 
-import React from 'react';
-import { Button } from '@/components/ui/button';
+import React, { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Plus } from 'lucide-react';
 import EpicModal from '@/components/organisms/epicModal/epic-modal';
-
+import { GET_EPICS } from '@/lib/graphql/epics/queries';
+import { useQuery } from '@apollo/client';
+import { GET_COMPANY_BY_CLERK_ID } from '@/lib/graphql';
 interface Epic {
   id: string;
   title: string;
@@ -15,25 +15,15 @@ interface Epic {
 }
 
 const EpicsPage = () => {
-  const [epics, setEpics] = React.useState<Epic[]>([]);
-  const [loading, setLoading] = React.useState(true);
+  const { data: companyData, loading: companyLoading } = useQuery(GET_COMPANY_BY_CLERK_ID);
+  const [epics, setEpics] = useState<Epic[]>([]);
+  const { data, loading, error } = useQuery(GET_EPICS);
 
-  React.useEffect(() => {
-    // Simular carga de datos
-    setTimeout(() => {
-      setLoading(false);
-      setEpics([
-        {
-          id: '1',
-          title: 'Desarrollo de Nueva Funcionalidad',
-          description: 'Implementación de nuevas características para el Q1',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        // Más épicas de ejemplo...
-      ]);
-    }, 1000);
-  }, []);
+  useEffect(() => {
+    if (data) {
+      setEpics(data.getEpics);
+    }
+  }, [data]);
 
   const handleCreateEpic = (data: { title: string; description: string }) => {
     // Aquí implementaremos la lógica para crear una nueva épica
@@ -48,11 +38,14 @@ const EpicsPage = () => {
     setEpics(prevEpics => [...prevEpics, newEpic]);
   };
 
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
   return (
     <div className="w-full">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-medium">Épicas</h1>
-        <EpicModal onSubmit={handleCreateEpic} />
+        <EpicModal companyId={companyData?.getCompanyByClerkId.id} />
       </div>
 
       {loading ? (

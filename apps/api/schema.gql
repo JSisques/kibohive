@@ -2,22 +2,17 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type AuthResponseDto {
-  accessToken: String!
-  companySubdomain: String!
-  user: User!
-}
-
 type Company {
   createdAt: DateTime!
   id: String!
+  members: [User!]
   name: String!
   subdomain: String!
-  teams: [Team!]
   updatedAt: DateTime!
 }
 
 input CreateCompanyInput {
+  clerkId: String!
   name: String!
   subdomain: String!
 }
@@ -25,9 +20,6 @@ input CreateCompanyInput {
 input CreateEpicInput {
   companyId: String!
   description: String
-  endDate: String!
-  startDate: String!
-  teamId: String!
   title: String!
 }
 
@@ -38,21 +30,15 @@ input CreateTaskInput {
   description: String
   dueDate: String
   epicId: String
-  teamId: String!
+  status: TaskStatus
   title: String!
 }
 
-input CreateTeamInput {
-  companyId: String!
-  description: String
-  name: String!
-}
-
 input CreateUserInput {
+  clerkId: String!
   companyId: String!
   email: String!
   name: String
-  password: String!
 }
 
 """
@@ -61,13 +47,12 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Epic {
+  company: Company
   companyId: String!
   createdAt: DateTime!
   description: String
-  endDate: DateTime!
   id: String!
-  startDate: DateTime!
-  teamId: String!
+  tasks: [Task!]
   title: String!
   updatedAt: DateTime!
 }
@@ -76,77 +61,49 @@ type Mutation {
   createCompany(input: CreateCompanyInput!): Company!
   createEpic(input: CreateEpicInput!): Epic!
   createTask(input: CreateTaskInput!): Task!
-  createTeam(input: CreateTeamInput!): Team!
   createUser(input: CreateUserInput!): User!
   deleteCompany(id: String!): Company!
   deleteEpic(id: String!): Epic!
   deleteTask(id: String!): Task!
-  deleteTeam(id: String!): Team!
   deleteUser(id: String!): User!
-  signIn(input: SignInInput!): AuthResponseDto!
-  signUp(input: SignUpInput!): AuthResponseDto!
   updateCompany(id: String!, input: UpdateCompanyInput!): Company!
   updateEpic(id: String!, input: UpdateEpicInput!): Epic!
   updateTask(id: String!, input: UpdateTaskInput!): Task!
-  updateTeam(id: String!, input: UpdateTeamInput!): Team!
   updateUser(id: String!, input: UpdateUserInput!): User!
 }
 
 type Query {
   getCompanies: [Company!]!
+  getCompanyByClerkId(clerkId: String!): Company!
   getCompanyById(id: String!): Company!
   getCompanyBySubdomain(subdomain: String!): Company!
   getEpicById(id: String!): Epic!
   getEpics: [Epic!]!
   getTaskById(id: String!): Task!
   getTasks: [Task!]!
-  getTasksByTeamId(teamId: String!): [Task!]!
-  getTeamById(id: String!): Team!
-  getTeams: [Team!]!
   getUserById(id: String!): User!
   getUsers: [User!]!
-  isSubdomainAvailable(subdomain: String!): Boolean!
-}
-
-input SignInInput {
-  email: String!
-  password: String!
-}
-
-input SignUpInput {
-  companyName: String
-  email: String!
-  isNewCompany: Boolean!
-  name: String!
-  password: String!
-  selectedTeam: String
-  subdomain: String!
-  teamDescription: String
-  teamName: String
 }
 
 type Task {
+  assignedTo: User
   assignedToId: String
-  companyId: String!
   createdAt: DateTime!
-  createdBy: User!
-  createdById: String!
+  deletedAt: DateTime
   description: String
-  dueDate: DateTime
+  epic: Epic
   epicId: String
   id: String!
-  teamId: String!
+  status: TaskStatus!
   title: String!
   updatedAt: DateTime!
 }
 
-type Team {
-  companyId: String!
-  createdAt: DateTime!
-  description: String
-  id: String!
-  name: String!
-  updatedAt: DateTime!
+"""Estado de la tarea"""
+enum TaskStatus {
+  DONE
+  IN_PROGRESS
+  TODO
 }
 
 input UpdateCompanyInput {
@@ -165,11 +122,6 @@ input UpdateTaskInput {
   title: String!
 }
 
-input UpdateTeamInput {
-  description: String
-  name: String
-}
-
 input UpdateUserInput {
   email: String
   name: String
@@ -177,12 +129,11 @@ input UpdateUserInput {
 }
 
 type User {
-  avatar: String!
+  clerkId: String!
   companyId: String!
   createdAt: DateTime!
   email: String!
   id: String!
   name: String
-  password: String!
   updatedAt: DateTime!
 }

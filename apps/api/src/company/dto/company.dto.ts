@@ -1,6 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { IsNotEmpty, IsString, IsUUID, IsDate } from 'class-validator';
-import { TeamDto } from 'src/team/dto/team.dto';
+import { UserDto } from 'src/user/dto/user.dto';
 
 @ObjectType('Company')
 export class CompanyDto {
@@ -13,9 +13,6 @@ export class CompanyDto {
   @IsString()
   @IsNotEmpty()
   name: string;
-
-  @Field(() => [TeamDto], { nullable: true })
-  teams?: TeamDto[];
 
   @Field(() => [UserDto], { nullable: true })
   members?: UserDto[];

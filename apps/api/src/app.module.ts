@@ -9,9 +9,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ApolloDriver } from '@nestjs/apollo';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
-import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
-import { TeamModule } from './team/team.module';
 import { CompanyModule } from './company/company.module';
 
 @Module({
@@ -28,9 +26,7 @@ import { CompanyModule } from './company/company.module';
     EpicModule,
     TaskModule,
     PrismaModule,
-    AuthModule,
     UserModule,
-    TeamModule,
     CompanyModule,
   ],
   controllers: [AppController],

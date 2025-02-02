@@ -13,4 +13,9 @@ export class CreateCompanyDto {
   @IsString()
   @IsNotEmpty()
   subdomain: string;
+
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  clerkId: string;
 }

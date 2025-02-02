@@ -21,28 +21,8 @@ export class CreateEpicDto {
   @IsString()
   description?: string;
 
-  // @Field(() => EpicStatus, { nullable: true })
-  // @IsOptional()
-  // @IsEnum(EpicStatus)
-  // status?: EpicStatus;
-
   @Field()
   @IsNotEmpty()
   @IsUUID()
   companyId: string;
-
-  @Field()
-  @IsNotEmpty()
-  @IsDateString()
-  startDate: string;
-
-  @Field()
-  @IsNotEmpty()
-  @IsDateString()
-  endDate: string;
-
-  @Field()
-  @IsNotEmpty()
-  @IsUUID()
-  teamId: string;
 }

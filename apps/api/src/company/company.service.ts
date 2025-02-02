@@ -30,6 +30,13 @@ export class CompanyService {
     });
   }
 
+  async getCompanyByClerkId(clerkId: string) {
+    return this.prisma.company.findUnique({
+      where: { clerkId },
+      include: { epics: true, members: true },
+    });
+  }
+
   async createCompany(createCompanyDto: CreateCompanyDto) {
     return await this.prisma.company.create({
       data: createCompanyDto,

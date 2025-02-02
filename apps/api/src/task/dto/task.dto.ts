@@ -10,6 +10,8 @@ import {
 import { UserDto } from 'src/user/dto/user.dto';
 import { EpicDto } from 'src/epic/dto/epic.dto';
 import { TaskStatus } from '@prisma/client';
+import '../enums/task-status.enum';
+
 @ObjectType('Task')
 export class TaskDto {
   @Field()

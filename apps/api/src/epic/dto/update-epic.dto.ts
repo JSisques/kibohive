@@ -6,7 +6,6 @@ import {
   IsDateString,
 } from 'class-validator';
 import { InputType, Field, ObjectType } from '@nestjs/graphql';
-import { EpicStatus } from '@prisma/client';
 
 @ObjectType('UpdateEpic')
 @InputType('UpdateEpicInput')

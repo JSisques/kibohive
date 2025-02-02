@@ -2,6 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { TaskStatus } from '@prisma/client';
+
 @Injectable()
 export class TaskService {
   private readonly logger;
@@ -18,27 +20,31 @@ export class TaskService {
     this.logger.log('Entering getTaskById()');
     return this.prisma.task.findUnique({
       where: { id },
-      include: {
-        createdBy: true,
-      },
-    });
-  }
-
-  async getTasksByTeamId(teamId: string) {
-    this.logger.log(`Entering getTasksByTeamId(${teamId})`);
-    return this.prisma.task.findMany({
-      where: { teamId },
-      include: {
-        createdBy: true,
-      },
     });
   }
 
   async createTask(createTaskDto: CreateTaskDto) {
     this.logger.log(`Entering createTask(${createTaskDto.title})`);
     this.logger.debug(`Task data: ${JSON.stringify(createTaskDto)}`);
+
     return this.prisma.task.create({
-      data: createTaskDto,
+      data: {
+        title: createTaskDto.title,
+        description: createTaskDto.description || '',
+        status: TaskStatus.TODO,
+        epic: {
+          connect: {
+            id: createTaskDto.epicId,
+          },
+        },
+        assignedTo: createTaskDto.assignedToId
+          ? {
+              connect: {
+                id: createTaskDto.assignedToId,
+              },
+            }
+          : undefined,
+      },
     });
   }
 

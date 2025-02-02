@@ -24,12 +24,6 @@ export class TaskResolver {
     return this.taskService.getTaskById(id);
   }
 
-  @Query(() => [TaskDto])
-  async getTasksByTeamId(@Args('teamId') teamId: string) {
-    this.logger.log(`Entering getTasksByTeamId(${teamId})`);
-    return this.taskService.getTasksByTeamId(teamId);
-  }
-
   @Mutation(() => TaskDto)
   async createTask(@Args('input') createTaskDto: CreateTaskDto) {
     this.logger.log(`Entering createTask(${createTaskDto.title})`);

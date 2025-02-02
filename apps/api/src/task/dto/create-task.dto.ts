@@ -7,7 +7,8 @@ import {
   IsDateString,
 } from 'class-validator';
 import { InputType, Field, ObjectType } from '@nestjs/graphql';
-import { Priority, TaskStatus } from '@prisma/client';
+import { TaskStatus } from '@prisma/client';
+import '../enums/task-status.enum';
 
 @ObjectType('CreateTask')
 @InputType('CreateTaskInput')
@@ -22,10 +23,10 @@ export class CreateTaskDto {
   @IsString()
   description?: string;
 
-  // @Field(() => TaskStatus, { nullable: true })
-  // @IsOptional()
-  // @IsEnum(TaskStatus)
-  // status?: TaskStatus;
+  @Field(() => TaskStatus, { nullable: true })
+  @IsOptional()
+  @IsEnum(TaskStatus)
+  status?: TaskStatus;
 
   // @Field(() => Priority)
   // @IsOptional()
@@ -41,11 +42,6 @@ export class CreateTaskDto {
   @IsOptional()
   @IsDateString()
   dueDate?: string;
-
-  @Field()
-  @IsNotEmpty()
-  @IsUUID()
-  teamId: string;
 
   @Field({ nullable: true })
   @IsOptional()

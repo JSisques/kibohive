@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,26 +6,45 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Plus } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
+import { useMutation, useQuery } from '@apollo/client';
+import { useOrganization } from '@clerk/nextjs';
+import { GET_COMPANY_BY_CLERK_ID, CREATE_EPIC } from '@/lib/graphql';
 
 interface EpicModalProps {
-  onSubmit: (data: { title: string; description: string; useAI: boolean; autoAssign: boolean }) => void;
+  companyId: string;
 }
 
-const EpicModal: React.FC<EpicModalProps> = ({ onSubmit }) => {
-  const [open, setOpen] = React.useState(false);
-  const [title, setTitle] = React.useState('');
-  const [description, setDescription] = React.useState('');
-  const [useAI, setUseAI] = React.useState(false);
-  const [autoAssign, setAutoAssign] = React.useState(false);
+const EpicModal = ({ companyId }: EpicModalProps) => {
+  const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [useAI, setUseAI] = useState(false);
+  const [autoAssign, setAutoAssign] = useState(false);
+  const [createEpic, { loading: createEpicLoading }] = useMutation(CREATE_EPIC);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  console.log(companyId);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ title, description, useAI, autoAssign });
-    setTitle('');
-    setDescription('');
-    setUseAI(false);
-    setAutoAssign(false);
-    setOpen(false);
+    setIsLoading(true);
+    try {
+      await createEpic({
+        variables: {
+          input: {
+            title: title,
+            description: description,
+            companyId: companyId,
+          },
+        },
+      });
+
+      setOpen(false);
+    } catch (error) {
+      console.error('Error al crear la épica:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
