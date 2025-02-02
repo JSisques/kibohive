@@ -15,7 +15,10 @@ export class EpicService {
   async getEpics(): Promise<EpicDto[]> {
     this.logger.log('Getting all epics');
     return this.prisma.epic.findMany({
-      include: { company: true, tasks: true },
+      include: {
+        company: true,
+        tasks: true,
+      },
     });
   }
 
@@ -30,8 +33,15 @@ export class EpicService {
   async createEpic(epic: CreateEpicDto): Promise<EpicDto> {
     this.logger.log(`Creating epic: ${epic.title}`);
     return this.prisma.epic.create({
-      data: epic,
-      include: { company: true, tasks: true },
+      data: {
+        title: epic.title,
+        description: epic.description || '',
+        companyId: epic.companyId,
+      },
+      include: {
+        company: true,
+        tasks: { include: { epic: true, assignedTo: true } },
+      },
     });
   }
 

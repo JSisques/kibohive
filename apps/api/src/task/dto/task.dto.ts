@@ -40,20 +40,18 @@ export class TaskDto {
   @IsUUID()
   epicId?: string;
 
-  @Field(() => EpicDto)
-  @IsNotEmpty()
-  @IsUUID()
-  epic: EpicDto;
+  @Field(() => EpicDto, { nullable: true })
+  @IsOptional()
+  epic?: Partial<EpicDto>;
 
   @Field({ nullable: true })
   @IsOptional()
   @IsUUID()
   assignedToId?: string;
 
-  @Field(() => UserDto)
-  @IsNotEmpty()
-  @IsUUID()
-  assignedTo: UserDto;
+  @Field(() => UserDto, { nullable: true })
+  @IsOptional()
+  assignedTo?: UserDto;
 
   @Field(() => TaskStatus)
   @IsNotEmpty()

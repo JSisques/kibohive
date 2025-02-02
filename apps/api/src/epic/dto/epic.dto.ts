@@ -39,13 +39,11 @@ export class EpicDto {
   @IsUUID()
   companyId: string;
 
-  @Field(() => CompanyDto)
-  @IsNotEmpty()
-  @IsUUID()
-  company: CompanyDto;
+  @Field(() => CompanyDto, { nullable: true })
+  @IsOptional()
+  company?: CompanyDto;
 
-  @Field(() => [TaskDto])
-  @IsNotEmpty()
-  @IsUUID()
-  tasks: TaskDto[];
+  @Field(() => [TaskDto], { nullable: true })
+  @IsOptional()
+  tasks?: TaskDto[];
 }

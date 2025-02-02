@@ -5,21 +5,26 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Plus } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
 
 interface EpicModalProps {
-  onSubmit: (data: { title: string; description: string }) => void;
+  onSubmit: (data: { title: string; description: string; useAI: boolean; autoAssign: boolean }) => void;
 }
 
 const EpicModal: React.FC<EpicModalProps> = ({ onSubmit }) => {
   const [open, setOpen] = React.useState(false);
   const [title, setTitle] = React.useState('');
   const [description, setDescription] = React.useState('');
+  const [useAI, setUseAI] = React.useState(false);
+  const [autoAssign, setAutoAssign] = React.useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ title, description });
+    onSubmit({ title, description, useAI, autoAssign });
     setTitle('');
     setDescription('');
+    setUseAI(false);
+    setAutoAssign(false);
     setOpen(false);
   };
 
@@ -50,6 +55,14 @@ const EpicModal: React.FC<EpicModalProps> = ({ onSubmit }) => {
               placeholder="Describe el objetivo de esta épica"
               required
             />
+          </div>
+          <div className="flex items-center space-x-2">
+            <Switch id="ai-tasks" checked={useAI} onCheckedChange={setUseAI} />
+            <Label htmlFor="ai-tasks">Desglosar en tareas mediante IA</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Switch id="auto-assign" checked={autoAssign} onCheckedChange={setAutoAssign} />
+            <Label htmlFor="auto-assign">Asignar tareas automáticamente</Label>
           </div>
           <div className="flex justify-end space-x-2">
             <Button variant="outline" type="button" onClick={() => setOpen(false)}>
