@@ -55,6 +55,14 @@ export class EpicResolver {
         `Generated tasks by LLM: ${JSON.stringify(generatedTasksByLlm)}`,
       );
 
+      const tasks = JSON.parse(generatedTasksByLlm.data as string);
+
+      tasks.forEach((task: any) => {
+        this.logger.debug(
+          `Creating task: ${task.title}, ${task.description}, ${task.assignedTo}`,
+        );
+      });
+
       // Asignamos las tareas a los usuarios
       if (autoAssign) {
         this.logger.log('Auto assigning tasks to users');
