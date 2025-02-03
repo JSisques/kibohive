@@ -18,7 +18,7 @@ input CreateCompanyInput {
 }
 
 input CreateEpicInput {
-  companyId: String!
+  clerkCompanyId: String!
   description: String
   title: String!
 }
@@ -59,7 +59,7 @@ type Epic {
 
 type Mutation {
   createCompany(input: CreateCompanyInput!): Company!
-  createEpic(input: CreateEpicInput!): Epic!
+  createEpic(autoAssign: Boolean!, input: CreateEpicInput!, useAI: Boolean!): Epic!
   createTask(input: CreateTaskInput!): Task!
   createUser(input: CreateUserInput!): User!
   deleteCompany(id: String!): Company!

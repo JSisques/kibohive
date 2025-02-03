@@ -32,11 +32,20 @@ export class EpicService {
 
   async createEpic(epic: CreateEpicDto): Promise<EpicDto> {
     this.logger.log(`Creating epic: ${epic.title}`);
+
+    const company = await this.prisma.company.findUnique({
+      where: { clerkId: epic.clerkCompanyId },
+    });
+
+    if (!company) {
+      throw new Error('Company not found');
+    }
+
     return this.prisma.epic.create({
       data: {
         title: epic.title,
         description: epic.description || '',
-        companyId: epic.companyId,
+        companyId: company.id,
       },
       include: {
         company: true,

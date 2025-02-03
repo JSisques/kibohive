@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const CREATE_EPIC = gql`
-  mutation CreateEpic($input: CreateEpicInput!) {
-    createEpic(input: $input) {
+  mutation CreateEpic($input: CreateEpicInput!, $autoAssign: Boolean!, $useAI: Boolean!) {
+    createEpic(input: $input, autoAssign: $autoAssign, useAI: $useAI) {
       id
     }
   }

@@ -23,6 +23,6 @@ export class CreateEpicDto {
 
   @Field()
   @IsNotEmpty()
-  @IsUUID()
-  companyId: string;
+  @IsString()
+  clerkCompanyId: string;
 }

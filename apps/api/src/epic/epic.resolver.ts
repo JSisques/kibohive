@@ -5,11 +5,15 @@ import { EpicService } from './epic.service';
 import { EpicDto } from './dto/epic.dto';
 import { CreateEpicDto } from './dto/create-epic.dto';
 import { UpdateEpicDto } from './dto/update-epic.dto';
+import { IAService } from 'src/ia/ia.service';
 
 @Resolver()
 export class EpicResolver {
   private readonly logger;
-  constructor(private readonly epicService: EpicService) {
+  constructor(
+    private readonly epicService: EpicService,
+    private readonly iaService: IAService,
+  ) {
     this.logger = new Logger(EpicResolver.name);
   }
 
@@ -26,9 +30,38 @@ export class EpicResolver {
   }
 
   @Mutation(() => EpicDto)
-  async createEpic(@Args('input') input: CreateEpicDto): Promise<EpicDto> {
+  async createEpic(
+    @Args('input') input: CreateEpicDto,
+    @Args('useAI') useAI: boolean,
+    @Args('autoAssign') autoAssign: boolean,
+  ): Promise<EpicDto> {
     this.logger.log(`Creating epic: ${input.title}`);
-    return this.epicService.createEpic(input);
+
+    // Creamos la épica
+    const epic = await this.epicService.createEpic(input);
+
+    // Desglosamos la épica en tareas
+    if (useAI) {
+      const generatedTasksByLlm = await this.iaService.executePrompt(
+        `Desglosa la épica con titulo ${epic.title} y descripcion ${epic.description} en tareas, el formato de las tareas debe ser el siguiente:
+        {
+          "title": "Tarea 1",
+          "description": "Descripción de la tarea 1",
+          "assignedTo": "Usuario asignado a la tarea 1"
+        }`,
+      );
+
+      this.logger.debug(
+        `Generated tasks by LLM: ${JSON.stringify(generatedTasksByLlm)}`,
+      );
+
+      // Asignamos las tareas a los usuarios
+      if (autoAssign) {
+        this.logger.log('Auto assigning tasks to users');
+      }
+    }
+
+    return epic;
   }
 
   @Mutation(() => EpicDto)

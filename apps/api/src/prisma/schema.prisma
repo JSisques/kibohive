@@ -27,7 +27,7 @@ model User {
 
 model Company {
   id          String    @id @default(uuid())
-  clerkId     String    @unique @default("") // ID de Clerk
+  clerkId     String    @unique @default("") @map("idx_clerkId") // ID de Clerk
   name        String
   subdomain   String    @unique @default("") @map("idx_subdomain")
   createdAt   DateTime  @default(now())

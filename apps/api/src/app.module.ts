@@ -11,6 +11,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { UserModule } from './user/user.module';
 import { CompanyModule } from './company/company.module';
+import { IAModule } from './ia/ia.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { CompanyModule } from './company/company.module';
     PrismaModule,
     UserModule,
     CompanyModule,
+    IAModule,
   ],
   controllers: [AppController],
   providers: [AppService],

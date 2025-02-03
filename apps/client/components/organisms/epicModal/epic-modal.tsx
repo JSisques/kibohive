@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Plus } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { useMutation, useQuery } from '@apollo/client';
-import { useOrganization } from '@clerk/nextjs';
+import { useOrganization, useUser } from '@clerk/nextjs';
 import { GET_COMPANY_BY_CLERK_ID, CREATE_EPIC } from '@/lib/graphql';
 
 interface EpicModalProps {
@@ -22,6 +22,7 @@ const EpicModal = ({ companyId }: EpicModalProps) => {
   const [autoAssign, setAutoAssign] = useState(false);
   const [createEpic, { loading: createEpicLoading }] = useMutation(CREATE_EPIC);
   const [isLoading, setIsLoading] = useState(false);
+  const { user } = useUser();
 
   console.log(companyId);
 
@@ -34,8 +35,10 @@ const EpicModal = ({ companyId }: EpicModalProps) => {
           input: {
             title: title,
             description: description,
-            companyId: companyId,
+            clerkCompanyId: user?.organizationMemberships[0].organization.id as string,
           },
+          autoAssign: autoAssign,
+          useAI: useAI,
         },
       });
 
