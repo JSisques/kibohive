@@ -2,8 +2,12 @@
 
 import { GET_TASKS } from '@/lib/graphql';
 import { useQuery } from '@apollo/client';
-import React from 'react';
+import React, { useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Input } from '@/components/ui/input';
+import { Search, Calendar, User2 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card';
 
 interface Task {
   id: string;
@@ -22,53 +26,79 @@ interface Task {
 
 const TasksPage = () => {
   const { data, loading, error } = useQuery(GET_TASKS);
+  const [searchQuery, setSearchQuery] = useState('');
 
   if (error) return <div>Error: {error.message}</div>;
-  if (loading) return <div>Loading...</div>;
+
+  const filteredTasks = data?.getTasks.filter(
+    (task: Task) =>
+      task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      task.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      task.epic.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      task.assignedTo?.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
 
   return (
-    <div className="w-full">
-      <div className="flex justify-between items-center mb-8">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-2xl font-medium">Tareas</h1>
-          <p className="text-sm text-muted-foreground">Descipcion de lo que hace esta página</p>
+    <div className="w-full max-w-7xl mx-auto px-4">
+      <div className="flex flex-col gap-8">
+        <div className="flex justify-between items-center">
+          <div className="flex flex-col gap-2">
+            <h1 className="text-3xl font-bold">Tareas</h1>
+            <p className="text-muted-foreground">Gestiona y visualiza todas las tareas del proyecto</p>
+          </div>
+          <Badge variant="secondary" className="px-4 py-2 text-sm">
+            {data?.getTasks.length || 0} tareas
+          </Badge>
         </div>
 
-        <p className="text-sm text-muted-foreground">{data?.getTasks.length} tareas</p>
-      </div>
-
-      {loading ? (
-        <div className="grid grid-cols-1 gap-3">
-          {[1, 2, 3].map(i => (
-            <div key={i} className="h-24">
-              <Skeleton className="h-full w-full" />
-            </div>
-          ))}
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+          <Input
+            placeholder="Buscar por título, descripción, épica o asignado..."
+            className="pl-10"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+          />
         </div>
-      ) : (
-        <div className="grid grid-cols-1 gap-3">
-          {data?.getTasks.map((task: Task) => (
-            <div key={task.id} className="p-6 bg-background hover:bg-muted/50 border border-border rounded-lg transition-colors cursor-pointer">
-              <div className="flex flex-col gap-2">
-                <div className="flex justify-between items-start">
-                  <h3 className="text-lg font-medium">{task.title}</h3>
-                  <time className="text-sm text-muted-foreground">{new Date(task.createdAt).toLocaleDateString()}</time>
-                </div>
-                <p className="text-sm text-muted-foreground">{task.description}</p>
-                <div className="flex items-center justify-between gap-2 mt-2">
-                  <span className="text-xs px-2 py-1 bg-primary/10 rounded-full">{task.epic.title}</span>
+
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map(i => (
+              <Skeleton key={i} className="h-[200px] w-full" />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredTasks?.map((task: Task) => (
+              <Card key={task.id} className="group hover:shadow-lg transition-all duration-300">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold line-clamp-1">{task.title}</h3>
+                    <Badge variant="outline" className="group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                      {task.epic.title}
+                    </Badge>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground line-clamp-2">{task.description}</p>
+                </CardContent>
+                <CardFooter className="flex justify-between items-center">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Calendar className="h-4 w-4" />
+                    <time>{new Date(task.createdAt).toLocaleDateString()}</time>
+                  </div>
                   {task.assignedTo && (
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-muted-foreground">Asignado a:</span>
-                      <span className="text-xs font-medium">{task.assignedTo.name}</span>
+                      <User2 className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm font-medium">{task.assignedTo.name}</span>
                     </div>
                   )}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
