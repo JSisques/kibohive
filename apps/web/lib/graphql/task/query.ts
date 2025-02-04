@@ -1,20 +1,19 @@
 import { gql } from '@apollo/client';
 
-export const GET_TASKS_BY_TEAM_ID = gql`
-  query GetTasksByTeamId($teamId: String!) {
-    getTasksByTeamId(teamId: $teamId) {
+export const GET_TASKS = gql`
+  query GetTasks {
+    getTasks {
       id
       title
       description
-      dueDate
-      createdById
-      createdBy {
-        id
-        name
-        email
-        avatar
-      }
-      teamId
+    }
+  }
+`;
+
+export const GET_TASK_BY_COMPANY_ID = gql`
+  query GetTaskByCompanyId($companyId: String!) {
+    getTaskByCompanyId(companyId: $companyId) {
+      id
     }
   }
 `;

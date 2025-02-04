@@ -47,6 +47,7 @@ export class GeminiProvider implements IAProvider {
 
       // Extraer y parsear la respuesta JSON del texto generado
       const generatedText = response.data.candidates[0].content.parts[0].text;
+      this.logger.debug(`Generated text by Gemini: ${generatedText}`);
       return extractJsonFromText(generatedText);
     } catch (error) {
       this.logger.error(`Error executing Gemini prompt: ${error.message}`);

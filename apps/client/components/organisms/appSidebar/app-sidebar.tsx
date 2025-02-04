@@ -39,14 +39,8 @@ import { SignInButton, SignOutButton, useAuth, useOrganization, UserButton, useU
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const AppSidebar = () => {
-  const { isSignedIn } = useAuth();
   const router = useRouter();
-  const { organization } = useOrganization();
   const { user } = useUser();
-
-  if (!isSignedIn) {
-    return null;
-  }
 
   return (
     <Sidebar>

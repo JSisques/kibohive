@@ -7,6 +7,12 @@ export const GET_COMPANY = gql`
       name
       subdomain
       clerkId
+      members {
+        id
+        firstName
+        lastName
+        email
+      }
     }
   }
 `;
@@ -23,6 +29,10 @@ export const GET_COMPANY_BY_CLERK_ID = gql`
   query GetCompanyByClerkId($clerkId: String!) {
     getCompanyByClerkId(clerkId: $clerkId) {
       id
+      members {
+        id
+        email
+      }
     }
   }
 `;

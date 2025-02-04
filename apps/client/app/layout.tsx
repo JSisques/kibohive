@@ -1,6 +1,6 @@
 'use client';
 
-import { ClerkProvider } from '@clerk/nextjs';
+import { ClerkProvider, useUser } from '@clerk/nextjs';
 import './globals.css';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import AppSidebar from '@/components/organisms/appSidebar/app-sidebar';
@@ -14,10 +14,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ClerkProvider>
           <ApolloProvider client={graphqlClient}>
             <SidebarProvider>
-              <div className="flex">
-                <AppSidebar />
-                <main className="w-full flex flex-col gap-4 p-6">{children}</main>
-              </div>
+              <AppSidebar />
+              <main className="w-full flex flex-col gap-4 p-6">{children}</main>
             </SidebarProvider>
           </ApolloProvider>
         </ClerkProvider>

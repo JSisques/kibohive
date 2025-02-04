@@ -13,13 +13,22 @@ export class TaskService {
 
   async getTasks() {
     this.logger.log('Entering getTasks()');
-    return this.prisma.task.findMany();
+    return this.prisma.task.findMany({
+      include: {
+        epic: true,
+        assignedTo: true,
+      },
+    });
   }
 
   async getTaskById(id: string) {
     this.logger.log('Entering getTaskById()');
     return this.prisma.task.findUnique({
       where: { id },
+      include: {
+        epic: true,
+        assignedTo: true,
+      },
     });
   }
 
@@ -45,7 +54,20 @@ export class TaskService {
             }
           : undefined,
       },
+      include: {
+        epic: true,
+        assignedTo: true,
+      },
     });
+  }
+
+  async createTasks(createTasksDto: CreateTaskDto[]) {
+    this.logger.log(`Entering createTasks(${createTasksDto.length})`);
+    this.logger.debug(`Tasks data: ${JSON.stringify(createTasksDto)}`);
+
+    return await Promise.all(
+      createTasksDto.map((task) => this.createTask(task)),
+    );
   }
 
   async updateTask(id: string, updateTaskDto: UpdateTaskDto) {
@@ -54,6 +76,10 @@ export class TaskService {
     return this.prisma.task.update({
       where: { id },
       data: updateTaskDto,
+      include: {
+        epic: true,
+        assignedTo: true,
+      },
     });
   }
 
@@ -61,6 +87,42 @@ export class TaskService {
     this.logger.log(`Entering deleteTask(${id})`);
     return this.prisma.task.delete({
       where: { id },
+      include: {
+        epic: true,
+        assignedTo: true,
+      },
+    });
+  }
+
+  async assignTasksToUsers(assignments: { taskId: string; userId: string }[]) {
+    this.logger.log(
+      `Entering assignTasksToUsers(${assignments.length} assignments)`,
+    );
+    this.logger.debug(`Assignments: ${JSON.stringify(assignments)}`);
+
+    return await Promise.all(
+      assignments.map(({ taskId, userId }) =>
+        this.assignTaskToUser(taskId, userId),
+      ),
+    );
+  }
+
+  async assignTaskToUser(taskId: string, userId: string) {
+    this.logger.log(
+      `Entering assignTaskToUser(Task: ${taskId}, User: ${userId})`,
+    );
+
+    return this.prisma.task.update({
+      where: { id: taskId },
+      data: {
+        assignedTo: {
+          connect: { id: userId },
+        },
+      },
+      include: {
+        epic: true,
+        assignedTo: true,
+      },
     });
   }
 }

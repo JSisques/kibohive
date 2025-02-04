@@ -44,7 +44,10 @@ const EpicsPage = () => {
   return (
     <div className="w-full">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-medium">Épicas</h1>
+        <div className="flex flex-col gap-2">
+          <h1 className="text-2xl font-medium">Épicas</h1>
+          <p className="text-sm text-muted-foreground">Aquí puedes ver todas las épicas de tu empresa.</p>
+        </div>
         <EpicModal companyId={companyData?.getCompanyByClerkId.id} />
       </div>
 

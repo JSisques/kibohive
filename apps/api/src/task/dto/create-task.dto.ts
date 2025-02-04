@@ -53,8 +53,8 @@ export class CreateTaskDto {
   @IsUUID()
   assignedToId?: string;
 
-  @Field()
-  @IsNotEmpty()
+  @Field({ nullable: true })
+  @IsOptional()
   @IsUUID()
-  createdById: string;
+  createdById?: string;
 }
