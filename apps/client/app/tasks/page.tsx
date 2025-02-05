@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Search, Calendar, User2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card';
+import Link from 'next/link';
 
 interface Task {
   id: string;
@@ -70,31 +71,33 @@ const TasksPage = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredTasks?.map((task: Task) => (
-              <Card key={task.id} className="group hover:shadow-lg transition-all duration-300">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold line-clamp-1">{task.title}</h3>
-                    <Badge variant="outline" className="group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                      {task.epic.title}
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground line-clamp-2">{task.description}</p>
-                </CardContent>
-                <CardFooter className="flex justify-between items-center">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Calendar className="h-4 w-4" />
-                    <time>{new Date(task.createdAt).toLocaleDateString()}</time>
-                  </div>
-                  {task.assignedTo && (
-                    <div className="flex items-center gap-2">
-                      <User2 className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm font-medium">{task.assignedTo.name}</span>
+              <Link href={`/tasks/${task.id}`} key={task.id} className="block">
+                <Card className="group hover:shadow-lg transition-all duration-300">
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-semibold line-clamp-1">{task.title}</h3>
+                      <Badge variant="outline" className="group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                        {task.epic.title}
+                      </Badge>
                     </div>
-                  )}
-                </CardFooter>
-              </Card>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground line-clamp-2">{task.description}</p>
+                  </CardContent>
+                  <CardFooter className="flex justify-between items-center">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Calendar className="h-4 w-4" />
+                      <time>{new Date(task.createdAt).toLocaleDateString()}</time>
+                    </div>
+                    {task.assignedTo && (
+                      <div className="flex items-center gap-2">
+                        <User2 className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm font-medium">{task.assignedTo.name}</span>
+                      </div>
+                    )}
+                  </CardFooter>
+                </Card>
+              </Link>
             ))}
           </div>
         )}

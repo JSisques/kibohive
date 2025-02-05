@@ -48,13 +48,7 @@ const AppSidebar = () => {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton className="h-fit" onClick={() => router.push('/profile')}>
-              <Avatar>
-                <AvatarImage src={user?.imageUrl} />
-                <AvatarFallback>
-                  {user?.firstName?.charAt(0)}
-                  {user?.lastName?.charAt(0)}
-                </AvatarFallback>
-              </Avatar>
+              <UserButton />
               <div className="flex flex-col">
                 <span>{`${user?.firstName} ${user?.lastName}`}</span>
                 <span>{user?.emailAddresses[0].emailAddress}</span>
