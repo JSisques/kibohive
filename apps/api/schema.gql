@@ -3,7 +3,10 @@
 # ------------------------------------------------------
 
 type Company {
+  businessRules: String
+  clerkId: String!
   createdAt: DateTime!
+  epics: [Epic!]
   id: String!
   members: [User!]
   name: String!
@@ -41,6 +44,11 @@ input CreateUserInput {
   name: String
 }
 
+input CreateUserSkillInput {
+  name: String!
+  rating: Float!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -52,12 +60,20 @@ type Epic {
   createdAt: DateTime!
   description: String
   id: String!
+  numberOfTaskCompleted: Float!
+  numberOfTaskInProgress: Float!
+  numberOfTaskPending: Float!
+  numberOfTasks: Float!
   tasks: [Task!]
+  tasksCompleted: [Task!]
+  tasksInProgress: [Task!]
+  tasksPending: [Task!]
   title: String!
   updatedAt: DateTime!
 }
 
 type Mutation {
+  addUserSkill(skill: CreateUserSkillInput!, userId: String!): UserSkill!
   createCompany(input: CreateCompanyInput!): Company!
   createEpic(autoAssign: Boolean!, input: CreateEpicInput!, useAI: Boolean!): Epic!
   createTask(input: CreateTaskInput!): Task!
@@ -66,10 +82,13 @@ type Mutation {
   deleteEpic(id: String!): Epic!
   deleteTask(id: String!): Task!
   deleteUser(id: String!): User!
+  deleteUserSkill(skillId: String!, userId: String!): UserSkill!
   updateCompany(id: String!, input: UpdateCompanyInput!): Company!
   updateEpic(id: String!, input: UpdateEpicInput!): Epic!
   updateTask(id: String!, input: UpdateTaskInput!): Task!
+  updateTaskStatus(id: String!, input: UpdateTaskStatusDto!): Task!
   updateUser(id: String!, input: UpdateUserInput!): User!
+  updateUserSkill(skill: UpdateUserSkillInput!, skillId: String!, userId: String!): UserSkill!
 }
 
 type Query {
@@ -81,13 +100,16 @@ type Query {
   getEpics: [Epic!]!
   getTaskById(id: String!): Task!
   getTasks: [Task!]!
+  getUserByClerkId(clerkId: String!): User!
   getUserById(id: String!): User!
+  getUserSkills(userId: String!): [UserSkill!]!
   getUsers: [User!]!
 }
 
 type Task {
   assignedTo: User
   assignedToId: String
+  assignmentReason: String
   createdAt: DateTime!
   deletedAt: DateTime
   description: String
@@ -107,6 +129,7 @@ enum TaskStatus {
 }
 
 input UpdateCompanyInput {
+  businessRules: String
   name: String
   subdomain: String
 }
@@ -122,10 +145,19 @@ input UpdateTaskInput {
   title: String!
 }
 
+input UpdateTaskStatusDto {
+  status: String!
+}
+
 input UpdateUserInput {
   email: String
   name: String
   password: String
+}
+
+input UpdateUserSkillInput {
+  name: String
+  rating: Float
 }
 
 type User {
@@ -135,5 +167,16 @@ type User {
   email: String!
   id: String!
   name: String
+  skills: [UserSkill!]
+  tasks: [Task!]
   updatedAt: DateTime!
+}
+
+type UserSkill {
+  createdAt: DateTime!
+  id: String!
+  name: String!
+  rating: Float!
+  updatedAt: DateTime!
+  userId: String!
 }

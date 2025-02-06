@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
+import { TaskStatus } from '@prisma/client';
 
 @Injectable()
 export class CompanyService {
@@ -31,10 +32,55 @@ export class CompanyService {
   }
 
   async getCompanyByClerkId(clerkId: string) {
-    return this.prisma.company.findUnique({
+    const company = await this.prisma.company.findUnique({
       where: { clerkId },
-      include: { epics: true, members: true },
+      include: {
+        epics: {
+          include: {
+            tasks: true,
+            _count: {
+              select: {
+                tasks: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+        },
+        members: {
+          include: {
+            skills: true,
+          },
+        },
+      },
     });
+
+    return {
+      ...company,
+      epics: company?.epics.map((epic) => ({
+        ...epic,
+        numberOfTasks: epic.tasks.length,
+        numberOfTaskCompleted: epic.tasks.filter(
+          (task) => task.status === TaskStatus.DONE,
+        ).length,
+        tasksCompleted: epic.tasks.filter(
+          (task) => task.status === TaskStatus.DONE,
+        ),
+        numberOfTaskInProgress: epic.tasks.filter(
+          (task) => task.status === TaskStatus.IN_PROGRESS,
+        ).length,
+        tasksInProgress: epic.tasks.filter(
+          (task) => task.status === TaskStatus.IN_PROGRESS,
+        ),
+        numberOfTaskPending: epic.tasks.filter(
+          (task) => task.status === TaskStatus.TODO,
+        ).length,
+        tasksPending: epic.tasks.filter(
+          (task) => task.status === TaskStatus.TODO,
+        ),
+      })),
+    };
   }
 
   async createCompany(createCompanyDto: CreateCompanyDto) {

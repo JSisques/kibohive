@@ -32,11 +32,10 @@ export const GET_TASK_BY_ID = gql`
       status
       createdAt
       updatedAt
-      epicId
+      assignmentReason
       epic {
         id
         title
-        description
       }
       assignedTo {
         id

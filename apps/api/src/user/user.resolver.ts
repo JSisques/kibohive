@@ -3,9 +3,14 @@ import { UserService } from './user.service';
 import { UserDto } from './dto/user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import {
+  UserSkillDto,
+  CreateUserSkillInput,
+  UpdateUserSkillInput,
+} from './dto/user-skill.dto';
 import { Logger } from '@nestjs/common';
 
-@Resolver()
+@Resolver(() => UserDto)
 export class UserResolver {
   private readonly logger;
   constructor(private readonly userService: UserService) {
@@ -22,6 +27,12 @@ export class UserResolver {
   async getUserById(@Args('id') id: string): Promise<UserDto> {
     this.logger.log(`Entering getUserById(${id})`);
     return this.userService.getUserById(id);
+  }
+
+  @Query(() => UserDto)
+  async getUserByClerkId(@Args('clerkId') clerkId: string): Promise<UserDto> {
+    this.logger.log(`Entering getUserByClerkId(${clerkId})`);
+    return this.userService.getUserByClerkId(clerkId);
   }
 
   @Mutation(() => UserDto)
@@ -43,5 +54,35 @@ export class UserResolver {
   async deleteUser(@Args('id') id: string): Promise<UserDto> {
     this.logger.log(`Entering deleteUser(${id})`);
     return this.userService.deleteUser(id);
+  }
+
+  @Query(() => [UserSkillDto])
+  async getUserSkills(@Args('userId') userId: string) {
+    return this.userService.getUserSkills(userId);
+  }
+
+  @Mutation(() => UserSkillDto)
+  async addUserSkill(
+    @Args('userId') userId: string,
+    @Args('skill') skill: CreateUserSkillInput,
+  ) {
+    return this.userService.addUserSkill(userId, skill);
+  }
+
+  @Mutation(() => UserSkillDto)
+  async updateUserSkill(
+    @Args('userId') userId: string,
+    @Args('skillId') skillId: string,
+    @Args('skill') skill: UpdateUserSkillInput,
+  ) {
+    return this.userService.updateUserSkill(userId, skillId, skill);
+  }
+
+  @Mutation(() => UserSkillDto)
+  async deleteUserSkill(
+    @Args('userId') userId: string,
+    @Args('skillId') skillId: string,
+  ) {
+    return this.userService.deleteUserSkill(userId, skillId);
   }
 }

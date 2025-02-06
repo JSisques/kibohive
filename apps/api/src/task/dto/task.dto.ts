@@ -64,4 +64,9 @@ export class TaskDto {
   @IsOptional()
   @IsDate()
   deletedAt?: Date;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  assignmentReason?: string;
 }

@@ -3,6 +3,14 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskStatus } from '@prisma/client';
+import { UpdateTaskStatusDto } from './dto/update-task-status.dto';
+import { TaskDto } from './dto/task.dto';
+
+interface AssignTaskData {
+  taskId: string;
+  userId: string;
+  reason: string;
+}
 
 @Injectable()
 export class TaskService {
@@ -94,30 +102,34 @@ export class TaskService {
     });
   }
 
-  async assignTasksToUsers(assignments: { taskId: string; userId: string }[]) {
-    this.logger.log(
-      `Entering assignTasksToUsers(${assignments.length} assignments)`,
-    );
-    this.logger.debug(`Assignments: ${JSON.stringify(assignments)}`);
+  async assignTasksToUsers(assignTasks: AssignTaskData[]): Promise<TaskDto[]> {
+    this.logger.log(`Assigning tasks to users: ${JSON.stringify(assignTasks)}`);
 
-    return await Promise.all(
-      assignments.map(({ taskId, userId }) =>
-        this.assignTaskToUser(taskId, userId),
-      ),
+    const updatedTasks = await Promise.all(
+      assignTasks.map(async (assignTask) => {
+        return this.prisma.task.update({
+          where: { id: assignTask.taskId },
+          data: {
+            assignedToId: assignTask.userId,
+            assignmentReason: assignTask.reason,
+          },
+          include: {
+            assignedTo: true,
+            epic: true,
+          },
+        });
+      }),
     );
+
+    return updatedTasks;
   }
 
-  async assignTaskToUser(taskId: string, userId: string) {
-    this.logger.log(
-      `Entering assignTaskToUser(Task: ${taskId}, User: ${userId})`,
-    );
-
+  async updateTaskStatus(id: string, status: TaskStatus) {
+    this.logger.log(`Entering updateTaskStatus for task ${status}`);
     return this.prisma.task.update({
-      where: { id: taskId },
+      where: { id },
       data: {
-        assignedTo: {
-          connect: { id: userId },
-        },
+        status,
       },
       include: {
         epic: true,

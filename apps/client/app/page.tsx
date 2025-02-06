@@ -1,4 +1,5 @@
-import { SignIn, SignedOut, UserButton, SignedIn } from '@clerk/nextjs';
+'use client';
+import { SignIn, SignedOut, UserButton, SignedIn, useUser, useOrganization } from '@clerk/nextjs';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -7,8 +8,22 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Clock, Users, CheckCircle2, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
+import { useQuery } from '@apollo/client';
+import { GET_COMPANY_BY_CLERK_ID } from '@/lib/graphql/company/queries';
 
 export default function Home() {
+  const { organization } = useOrganization();
+
+  const { data, loading, error } = useQuery(GET_COMPANY_BY_CLERK_ID, {
+    variables: {
+      clerkId: organization?.id,
+    },
+    skip: !organization?.id,
+  });
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
   return (
     <div className="min-h-screen">
       <SignedOut>
@@ -28,7 +43,6 @@ export default function Home() {
               <h1 className="text-3xl font-bold">Panel Principal</h1>
               <p className="text-muted-foreground">Resumen de actividad y métricas clave</p>
             </div>
-            <UserButton />
           </div>
 
           {/* Métricas Principales */}
@@ -39,7 +53,9 @@ export default function Home() {
                 <Clock className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">12</div>
+                <div className="text-2xl font-bold">
+                  {data?.getCompanyByClerkId.epics.reduce((acc: number, epic: any) => acc + epic.numberOfTasks, 0)}
+                </div>
                 <div className="flex items-center space-x-2">
                   <p className="text-xs text-muted-foreground">+3 desde ayer</p>
                   <Badge variant="secondary" className="text-xs">
@@ -56,7 +72,9 @@ export default function Home() {
                 <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">45</div>
+                <div className="text-2xl font-bold">
+                  {data?.getCompanyByClerkId.epics.reduce((acc: number, epic: any) => acc + epic.tasksCompleted.length, 0)}
+                </div>
                 <div className="flex items-center space-x-2">
                   <p className="text-xs text-muted-foreground">+8 esta semana</p>
                   <Badge variant="secondary" className="text-xs">
@@ -97,7 +115,9 @@ export default function Home() {
                 <AlertCircle className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">3</div>
+                <div className="text-2xl font-bold">
+                  {data?.getCompanyByClerkId.epics.reduce((acc: number, epic: any) => acc + epic.tasksPending.length, 0)}
+                </div>
                 <div className="flex items-center space-x-2">
                   <p className="text-xs text-muted-foreground">-2 desde ayer</p>
                   <Badge variant="secondary" className="text-xs">
@@ -110,7 +130,7 @@ export default function Home() {
           </div>
 
           {/* Épicas y Actividad */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6">
             <Card>
               <CardHeader>
                 <CardTitle>Épicas Recientes</CardTitle>
@@ -118,131 +138,23 @@ export default function Home() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {[
-                    {
-                      title: 'Rediseño de Dashboard',
-                      description: 'Actualización del diseño principal',
-                      status: 'En Progreso',
-                      progress: 65,
-                    },
-                    {
-                      title: 'Integración de IA',
-                      description: 'Implementación de nuevos modelos',
-                      status: 'Planificación',
-                      progress: 25,
-                    },
-                    {
-                      title: 'Optimización de Rendimiento',
-                      description: 'Mejoras en la velocidad de carga',
-                      status: 'En Revisión',
-                      progress: 90,
-                    },
-                  ].map((epic, i) => (
-                    <Link href={`/epics/${i + 1}`} key={i} className="block">
+                  {data?.getCompanyByClerkId.epics.slice(0, 5).map((epic: any) => (
+                    <Link href={`/epics/${epic.id}`} key={epic.id} className="block">
                       <div className="flex items-center space-x-4 p-4 hover:bg-muted rounded-lg transition-colors">
                         <div className="flex-1">
                           <h3 className="font-medium">{epic.title}</h3>
                           <p className="text-sm text-muted-foreground">{epic.description}</p>
-                          <Progress value={epic.progress} className="mt-2" />
+                          <Progress value={(epic.numberOfTaskCompleted / epic.numberOfTasks) * 100} className="mt-2" />
                         </div>
-                        <Badge>{epic.status}</Badge>
+                        <Badge>
+                          {epic.numberOfTaskCompleted} / {epic.numberOfTasks}
+                        </Badge>
                       </div>
                     </Link>
                   ))}
                 </div>
               </CardContent>
             </Card>
-
-            <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Actividad Reciente</CardTitle>
-                  <CardDescription>Últimas acciones del equipo</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {[
-                      {
-                        user: 'Juan Pérez',
-                        action: 'completó la tarea',
-                        task: 'Implementar autenticación',
-                        time: 'Hace 2 horas',
-                      },
-                      {
-                        user: 'María García',
-                        action: 'creó una nueva épica',
-                        task: 'Rediseño de la API',
-                        time: 'Hace 3 horas',
-                      },
-                      {
-                        user: 'Carlos Ruiz',
-                        action: 'comentó en',
-                        task: 'Optimización de consultas',
-                        time: 'Hace 4 horas',
-                      },
-                      {
-                        user: 'Ana Martínez',
-                        action: 'asignó una tarea a',
-                        task: 'Luis Rodríguez',
-                        time: 'Hace 5 horas',
-                      },
-                    ].map((activity, i) => (
-                      <div key={i} className="flex items-center space-x-4">
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${activity.user}`} />
-                          <AvatarFallback>{activity.user[0]}</AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 space-y-1">
-                          <p className="text-sm">
-                            <span className="font-medium">{activity.user}</span> {activity.action}{' '}
-                            <span className="font-medium">{activity.task}</span>
-                          </p>
-                          <p className="text-xs text-muted-foreground">{activity.time}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Próximos Vencimientos</CardTitle>
-                  <CardDescription>Tareas que requieren atención</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {[
-                      {
-                        title: 'Revisión de código',
-                        dueDate: 'Mañana',
-                        priority: 'Alta',
-                      },
-                      {
-                        title: 'Testing de integración',
-                        dueDate: 'En 2 días',
-                        priority: 'Media',
-                      },
-                      {
-                        title: 'Documentación API',
-                        dueDate: 'En 3 días',
-                        priority: 'Baja',
-                      },
-                    ].map((task, i) => (
-                      <div key={i} className="flex items-center justify-between p-2 hover:bg-muted rounded-lg">
-                        <div>
-                          <p className="font-medium">{task.title}</p>
-                          <p className="text-xs text-muted-foreground">Vence: {task.dueDate}</p>
-                        </div>
-                        <Badge variant={task.priority === 'Alta' ? 'destructive' : task.priority === 'Media' ? 'default' : 'secondary'}>
-                          {task.priority}
-                        </Badge>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
           </div>
         </div>
       </SignedIn>

@@ -22,6 +22,7 @@ model User {
   updatedAt   DateTime  @updatedAt
   company     Company?  @relation(fields: [companyId], references: [id])
   companyId   String?
+  skills      UserSkill[]
   tasks       Task[]    @relation("AssignedTasks")
 }
 
@@ -30,6 +31,7 @@ model Company {
   clerkId     String    @unique @default("") @map("idx_clerkId") // ID de Clerk
   name        String
   subdomain   String    @unique @default("") @map("idx_subdomain")
+  businessRules String?  @db.Text
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   members     User[]
@@ -48,21 +50,34 @@ model Epic {
 }
 
 model Task {
-  id          String    @id @default(uuid())
-  title       String
-  description String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  epic        Epic      @relation(fields: [epicId], references: [id])
-  epicId      String    @default("") @map("idx_epic")
-  assignedTo  User?     @relation("AssignedTasks", fields: [assignedToId], references: [id])
-  assignedToId String?  @map("idx_assignedTo")
-  status      TaskStatus @default(TODO)
-  deletedAt   DateTime?
+  id              String    @id @default(uuid())
+  title           String
+  description     String
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  epic            Epic      @relation(fields: [epicId], references: [id])
+  epicId          String    @default("") @map("idx_epic")
+  assignedTo      User?     @relation("AssignedTasks", fields: [assignedToId], references: [id])
+  assignedToId    String?   @map("idx_assignedTo")
+  status          TaskStatus @default(TODO)
+  deletedAt       DateTime?
+  assignmentReason String?  @db.Text
 }
 
 enum TaskStatus {
   TODO
   IN_PROGRESS
   DONE
+}
+
+model UserSkill {
+  id          String    @id @default(uuid())
+  name        String
+  rating      Int       @default(0)
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([userId, name])
 }

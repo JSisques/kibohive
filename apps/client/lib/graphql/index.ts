@@ -8,3 +8,6 @@ export * from './company/mutations';
 
 // Tasks
 export * from './tasks/queries';
+
+// User
+export * from './user/queries';

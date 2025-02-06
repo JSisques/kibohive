@@ -7,6 +7,8 @@ import {
   IsString,
   IsUUID,
 } from 'class-validator';
+import { UserSkillDto } from './user-skill.dto';
+import { TaskDto } from 'src/task/dto/task.dto';
 
 @ObjectType('User')
 export class UserDto {
@@ -34,6 +36,12 @@ export class UserDto {
   @IsUUID()
   @IsNotEmpty()
   companyId: string;
+
+  @Field(() => [UserSkillDto], { nullable: true })
+  skills?: UserSkillDto[];
+
+  @Field(() => [TaskDto], { nullable: true })
+  tasks?: TaskDto[];
 
   @Field()
   @IsDate()

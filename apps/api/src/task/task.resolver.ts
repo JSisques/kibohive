@@ -4,6 +4,7 @@ import { Logger } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskDto } from './dto/task.dto';
+import { UpdateTaskStatusDto } from './dto/update-task-status.dto';
 
 @Resolver()
 export class TaskResolver {
@@ -43,5 +44,16 @@ export class TaskResolver {
   async deleteTask(@Args('id') id: string) {
     this.logger.log(`Entering deleteTask(${id})`);
     return this.taskService.deleteTask(id);
+  }
+
+  @Mutation(() => TaskDto)
+  async updateTaskStatus(
+    @Args('id') id: string,
+    @Args('input') updateTaskStatusDto: UpdateTaskStatusDto,
+  ) {
+    this.logger.log(
+      `Entering updateTaskStatus resolver for task ${updateTaskStatusDto.status}`,
+    );
+    return this.taskService.updateTaskStatus(id, updateTaskStatusDto.status);
   }
 }

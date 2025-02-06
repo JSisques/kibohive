@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Plus } from 'lucide-react';
+import { Plus, Sparkles } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { useMutation, useQuery } from '@apollo/client';
 import { useOrganization, useUser } from '@clerk/nextjs';
@@ -18,8 +18,8 @@ const EpicModal = ({ companyId }: EpicModalProps) => {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [useAI, setUseAI] = useState(false);
-  const [autoAssign, setAutoAssign] = useState(false);
+  const [useAI, setUseAI] = useState(true);
+  const [autoAssign, setAutoAssign] = useState(true);
   const [createEpic, { loading: createEpicLoading }] = useMutation(CREATE_EPIC);
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useUser();
@@ -87,10 +87,19 @@ const EpicModal = ({ companyId }: EpicModalProps) => {
             <Label htmlFor="auto-assign">Asignar tareas automáticamente</Label>
           </div>
           <div className="flex justify-end space-x-2">
-            <Button variant="outline" type="button" onClick={() => setOpen(false)}>
+            <Button variant="outline" type="button" onClick={() => setOpen(false)} disabled={isLoading}>
               Cancelar
             </Button>
-            <Button type="submit">Crear Épica</Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? (
+                <div className="flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 animate-pulse" />
+                  {useAI ? 'La IA está pensando...' : 'Creando épica...'}
+                </div>
+              ) : (
+                'Crear Épica'
+              )}
+            </Button>
           </div>
         </form>
       </DialogContent>

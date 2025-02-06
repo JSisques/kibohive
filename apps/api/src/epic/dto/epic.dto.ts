@@ -2,6 +2,7 @@ import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import {
   IsDate,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   IsUUID,
@@ -43,7 +44,39 @@ export class EpicDto {
   @IsOptional()
   company?: CompanyDto;
 
+  @Field()
+  @IsOptional()
+  @IsNumber()
+  numberOfTasks?: number;
+
   @Field(() => [TaskDto], { nullable: true })
   @IsOptional()
   tasks?: TaskDto[];
+
+  @Field()
+  @IsOptional()
+  @IsNumber()
+  numberOfTaskCompleted?: number;
+
+  @Field(() => [TaskDto], { nullable: true })
+  @IsOptional()
+  tasksCompleted?: TaskDto[];
+
+  @Field()
+  @IsOptional()
+  @IsNumber()
+  numberOfTaskPending?: number;
+
+  @Field(() => [TaskDto], { nullable: true })
+  @IsOptional()
+  tasksPending?: TaskDto[];
+
+  @Field()
+  @IsOptional()
+  @IsNumber()
+  numberOfTaskInProgress?: number;
+
+  @Field(() => [TaskDto], { nullable: true })
+  @IsOptional()
+  tasksInProgress?: TaskDto[];
 }

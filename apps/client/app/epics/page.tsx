@@ -46,7 +46,7 @@ const EpicsPage = () => {
     );
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4">
+    <div className="w-full">
       <div className="flex justify-between items-center mb-8">
         <div className="flex flex-col gap-2">
           <h1 className="text-3xl font-bold tracking-tight">Épicas</h1>

@@ -100,11 +100,43 @@ export class EpicResolver {
         this.logger.debug(`Members: ${JSON.stringify(members)}`);
 
         const assignTaskByLlm = await this.iaService.executePrompt(
-          `Asigna las tareas ${JSON.stringify(createdTasks)} a los miembros de la empresa ${JSON.stringify(members)}, el formato de la asignación debe ser un array de objetos, el formato de cada asignación debe ser el siguiente:
+          `Eres un asistente experto en asignación de tareas. Tu objetivo es asignar tareas a los miembros del equipo de la manera más eficiente posible, basándote en sus habilidades y competencias.
+
+          Instrucciones:
+          1. Analiza las habilidades de cada miembro y el contenido de las tareas
+          2. Asigna las tareas priorizando miembros con habilidades relevantes
+          3. Intenta distribuir la carga de trabajo de manera equilibrada
+          4. Si una tarea requiere una habilidad específica, prioriza miembros con esa habilidad
+          5. Para tareas sin habilidades específicas, distribuye equitativamente
+
+          La respuesta debe ser un array de objetos con el siguiente formato:
           {
-            "taskId": <Id de la tarea>,
-            "userId": <Id del usuario>
-          }`,
+            "taskId": "<Id de la tarea>",
+            "userId": "<Id del usuario>",
+            "reason": "<Explicación breve de por qué se asignó esta tarea a este usuario>"
+          }
+
+          Información disponible:
+          - Miembros del equipo: ${JSON.stringify(
+            members.map((member) => ({
+              id: member.id,
+              name: member.name,
+              skills: member.skills.map((skill) => ({
+                name: skill.name,
+                rating: skill.rating,
+              })),
+            })),
+          )}
+          
+          - Tareas a asignar: ${JSON.stringify(
+            createdTasks.map((task) => ({
+              id: task.id,
+              title: task.title,
+              description: task.description,
+            })),
+          )}
+          
+          - Reglas de negocio ${company.businessRules}`,
         );
 
         this.logger.debug(

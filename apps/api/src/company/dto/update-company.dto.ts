@@ -13,4 +13,9 @@ export class UpdateCompanyDto {
   @IsString()
   @IsOptional()
   subdomain?: string;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  businessRules?: string;
 }
