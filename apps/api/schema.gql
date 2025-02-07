@@ -51,7 +51,7 @@ input CreateUserInput {
 
 input CreateUserQueryInput {
   clerkCompanyId: String!
-  conversationHistory: String!
+  conversationHistory: String
   userQuery: String!
 }
 

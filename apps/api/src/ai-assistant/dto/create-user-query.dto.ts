@@ -1,5 +1,5 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 @ObjectType('CreateUserQuery')
 @InputType('CreateUserQueryInput')
@@ -9,10 +9,10 @@ export class CreateUserQueryDto {
   @IsNotEmpty()
   userQuery: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @IsString()
-  @IsNotEmpty()
-  conversationHistory: string;
+  @IsOptional()
+  conversationHistory?: string;
 
   @Field(() => String)
   @IsString()
