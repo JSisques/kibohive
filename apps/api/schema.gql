@@ -44,6 +44,11 @@ input CreateUserInput {
   name: String
 }
 
+input CreateUserQueryInput {
+  clerkCompanyId: String!
+  userQuery: String!
+}
+
 input CreateUserSkillInput {
   name: String!
   rating: Float!
@@ -83,6 +88,7 @@ type Mutation {
   deleteTask(id: String!): Task!
   deleteUser(id: String!): User!
   deleteUserSkill(skillId: String!, userId: String!): UserSkill!
+  executeUserQuery(input: CreateUserQueryInput!): UserQuery!
   updateCompany(id: String!, input: UpdateCompanyInput!): Company!
   updateEpic(id: String!, input: UpdateEpicInput!): Epic!
   updateTask(id: String!, input: UpdateTaskInput!): Task!
@@ -170,6 +176,10 @@ type User {
   skills: [UserSkill!]
   tasks: [Task!]
   updatedAt: DateTime!
+}
+
+type UserQuery {
+  response: String!
 }
 
 type UserSkill {

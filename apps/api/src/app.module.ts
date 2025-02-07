@@ -12,6 +12,7 @@ import { join } from 'path';
 import { UserModule } from './user/user.module';
 import { CompanyModule } from './company/company.module';
 import { IAModule } from './ia/ia.module';
+import { AiAssistantModule } from './ai-assistant/ai-assistant.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { IAModule } from './ia/ia.module';
     UserModule,
     CompanyModule,
     IAModule,
+    AiAssistantModule,
   ],
   controllers: [AppController],
   providers: [AppService],
