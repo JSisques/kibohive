@@ -3,7 +3,7 @@ import { CompanyService } from 'src/company/company.service';
 import { IAService } from 'src/ia/ia.service';
 import { CreateUserQueryDto } from './dto/create-user-query.dto';
 import { UserQueryDto } from './dto/user-query.dto';
-
+import { PromptService } from 'src/prompt/prompt.service';
 @Injectable()
 export class AiAssistantService {
   private readonly logger;
@@ -11,38 +11,32 @@ export class AiAssistantService {
   constructor(
     private readonly iaService: IAService,
     private readonly companyService: CompanyService,
+    private readonly promptService: PromptService,
   ) {
     this.logger = new Logger(AiAssistantService.name);
   }
 
-  // TODO: Revisar el prompt
-
   async executeUserQuery(input: CreateUserQueryDto): Promise<UserQueryDto> {
     this.logger.log(`Solicitud de respuesta: ${input}`);
 
-    const company = await this.companyService.getCompanyByClerkId(
-      input.clerkCompanyId,
+    const company = JSON.stringify(
+      await this.companyService.getCompanyByClerkId(input.clerkCompanyId),
     );
+    const userQuery = input.userQuery;
+    const conversationHistory = input.conversationHistory;
 
-    const prompt = `
-    Eres un asistente de IA que ayuda a los usuarios a gestionar sus tareas.
-    Si el usuario te pide ayuda, debes responder con un mensaje de saludo y ofrecer tu ayuda.
-    Si el usuario te pide ayuda con algo, debes responder con un mensaje de saludo y ofrecer tu ayuda.
+    const prompt = await this.promptService.getPromptByName('ai-assistant');
 
+    this.logger.debug(`Prompt: ${prompt.description}`);
 
-    devuelvelo en un json con el siguiente formato:
-    {
-      "response": "string"
-    }
+    const promptWithVariables = prompt.description
+      .replace('${company}', company)
+      .replace('${userQuery}', userQuery)
+      .replace('${conversationHistory}', conversationHistory || '[]');
 
-    Aquí tienes la información de la empresa:
-    ${JSON.stringify(company)}
+    this.logger.debug(`Prompt with variables: ${promptWithVariables}`);
 
-    Aquí tienes la consulta del usuario:
-    ${input.userQuery}
-    `;
-
-    const response = await this.iaService.executePrompt(prompt);
+    const response = await this.iaService.executePrompt(promptWithVariables);
     const data = response.data as any;
 
     return { response: data.response };

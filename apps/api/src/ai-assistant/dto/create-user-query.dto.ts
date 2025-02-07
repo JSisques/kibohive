@@ -12,5 +12,10 @@ export class CreateUserQueryDto {
   @Field(() => String)
   @IsString()
   @IsNotEmpty()
+  conversationHistory: string;
+
+  @Field(() => String)
+  @IsString()
+  @IsNotEmpty()
   clerkCompanyId: string;
 }

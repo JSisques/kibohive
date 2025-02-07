@@ -13,6 +13,7 @@ import { UserModule } from './user/user.module';
 import { CompanyModule } from './company/company.module';
 import { IAModule } from './ia/ia.module';
 import { AiAssistantModule } from './ai-assistant/ai-assistant.module';
+import { PromptModule } from './prompt/prompt.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { AiAssistantModule } from './ai-assistant/ai-assistant.module';
     CompanyModule,
     IAModule,
     AiAssistantModule,
+    PromptModule,
   ],
   controllers: [AppController],
   providers: [AppService],

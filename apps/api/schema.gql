@@ -26,6 +26,11 @@ input CreateEpicInput {
   title: String!
 }
 
+input CreatePromptInput {
+  description: String!
+  name: String!
+}
+
 input CreateTaskInput {
   assignedToId: String
   companyId: String!
@@ -46,6 +51,7 @@ input CreateUserInput {
 
 input CreateUserQueryInput {
   clerkCompanyId: String!
+  conversationHistory: String!
   userQuery: String!
 }
 
@@ -81,20 +87,31 @@ type Mutation {
   addUserSkill(skill: CreateUserSkillInput!, userId: String!): UserSkill!
   createCompany(input: CreateCompanyInput!): Company!
   createEpic(autoAssign: Boolean!, input: CreateEpicInput!, useAI: Boolean!): Epic!
+  createPrompt(input: CreatePromptInput!): Prompt!
   createTask(input: CreateTaskInput!): Task!
   createUser(input: CreateUserInput!): User!
   deleteCompany(id: String!): Company!
   deleteEpic(id: String!): Epic!
+  deletePrompt(id: String!): Prompt!
   deleteTask(id: String!): Task!
   deleteUser(id: String!): User!
   deleteUserSkill(skillId: String!, userId: String!): UserSkill!
   executeUserQuery(input: CreateUserQueryInput!): UserQuery!
   updateCompany(id: String!, input: UpdateCompanyInput!): Company!
   updateEpic(id: String!, input: UpdateEpicInput!): Epic!
+  updatePrompt(id: String!, input: CreatePromptInput!): Prompt!
   updateTask(id: String!, input: UpdateTaskInput!): Task!
   updateTaskStatus(id: String!, input: UpdateTaskStatusDto!): Task!
   updateUser(id: String!, input: UpdateUserInput!): User!
   updateUserSkill(skill: UpdateUserSkillInput!, skillId: String!, userId: String!): UserSkill!
+}
+
+type Prompt {
+  createdAt: DateTime!
+  description: String!
+  id: String!
+  name: String!
+  updatedAt: DateTime!
 }
 
 type Query {
@@ -104,6 +121,9 @@ type Query {
   getCompanyBySubdomain(subdomain: String!): Company!
   getEpicById(id: String!): Epic!
   getEpics: [Epic!]!
+  getPromptById(id: String!): Prompt!
+  getPromptByName(name: String!): Prompt!
+  getPrompts: [Prompt!]!
   getTaskById(id: String!): Task!
   getTasks: [Task!]!
   getUserByClerkId(clerkId: String!): User!

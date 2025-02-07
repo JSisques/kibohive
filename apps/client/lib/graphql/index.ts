@@ -11,3 +11,6 @@ export * from './tasks/queries';
 
 // User
 export * from './user/queries';
+
+// AI Assistant
+export * from './ai-assistant/mutations';

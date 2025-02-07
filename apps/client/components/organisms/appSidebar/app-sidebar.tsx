@@ -18,6 +18,7 @@ import {
   Building2,
   Table,
   SquareChartGantt,
+  MessageSquareMore,
 } from 'lucide-react';
 
 import {
@@ -67,6 +68,21 @@ const AppSidebar = () => {
                 <SidebarMenuButton onClick={() => router.push('/')}>
                   <Home className="mr-2 h-4 w-4" />
                   <span>Panel Principal</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Asistente IA */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Asistente IA</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton onClick={() => router.push('/ai-assistant')}>
+                  <MessageSquareMore className="mr-2 h-4 w-4" />
+                  <span>Chat Asistente</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
