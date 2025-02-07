@@ -1,14 +1,14 @@
-name: Landing Build
+name: Client Build
 
 on:
   push:
     branches: [master, dev]
     paths:
-      - 'apps/landing/**'
+      - 'apps/client/**'
   pull_request:
     branches: [master, dev]
     paths:
-      - 'apps/landing/**'
+      - 'apps/client/**'
 
 jobs:
   build:
@@ -24,9 +24,9 @@ jobs:
           cache: 'yarn'
 
       - name: Install dependencies
-        working-directory: ./apps/landing
+        working-directory: ./apps/client
         run: yarn install --frozen-lockfile
 
       - name: Build
-        working-directory: ./apps/landing
+        working-directory: ./apps/client
         run: yarn build
