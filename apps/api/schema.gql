@@ -125,11 +125,12 @@ type Query {
   getPromptByName(name: String!): Prompt!
   getPrompts: [Prompt!]!
   getTaskById(id: String!): Task!
-  getTasks: [Task!]!
+  getTasks(limit: Int, page: Int): [Task!]!
   getUserByClerkId(clerkId: String!): User!
   getUserById(id: String!): User!
   getUserSkills(userId: String!): [UserSkill!]!
   getUsers: [User!]!
+  tasksCount: Int!
 }
 
 type Task {

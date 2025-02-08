@@ -118,7 +118,7 @@ const AppSidebar = () => {
               <SidebarMenuItem>
                 <SidebarMenuButton onClick={() => router.push('/kanban')}>
                   <Kanban className="mr-2 h-4 w-4" />
-                  <span>Tablero Kanban</span>
+                  <span>Kanban</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>

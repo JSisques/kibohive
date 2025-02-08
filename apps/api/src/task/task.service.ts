@@ -6,6 +6,11 @@ import { TaskStatus } from '@prisma/client';
 import { UpdateTaskStatusDto } from './dto/update-task-status.dto';
 import { TaskDto } from './dto/task.dto';
 
+interface PaginationParams {
+  page: number;
+  limit: number;
+}
+
 interface AssignTaskData {
   taskId: string;
   userId: string;
@@ -19,14 +24,33 @@ export class TaskService {
     this.logger = new Logger(TaskService.name);
   }
 
-  async getTasks() {
+  async getTasks(pagination?: PaginationParams) {
     this.logger.log('Entering getTasks()');
+
+    if (!pagination) {
+      return this.prisma.task.findMany({
+        include: {
+          epic: true,
+          assignedTo: true,
+        },
+      });
+    }
+
+    const { page, limit } = pagination;
+    const skip = (page - 1) * limit;
+
     return this.prisma.task.findMany({
+      skip,
+      take: limit,
       include: {
         epic: true,
         assignedTo: true,
       },
     });
+  }
+
+  async getTasksCount() {
+    return this.prisma.task.count();
   }
 
   async getTaskById(id: string) {

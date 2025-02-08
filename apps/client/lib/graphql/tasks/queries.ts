@@ -1,18 +1,15 @@
 import { gql } from '@apollo/client';
 
 export const GET_TASKS = gql`
-  query GetTasks {
-    getTasks {
+  query GetTasks($page: Int!, $limit: Int!) {
+    getTasks(page: $page, limit: $limit) {
       id
       title
       description
       createdAt
-      updatedAt
-      epicId
+      status
       epic {
-        id
         title
-        description
       }
       assignedTo {
         id
@@ -20,6 +17,7 @@ export const GET_TASKS = gql`
         email
       }
     }
+    tasksCount
   }
 `;
 

@@ -26,16 +26,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
-      <SignedOut>
-        <div className="flex flex-col items-center justify-center min-h-screen space-y-4 p-4">
-          <h1 className="text-4xl font-bold text-center">Bienvenido a KiboHive</h1>
-          <p className="text-xl text-muted-foreground text-center max-w-lg">
-            Optimiza el rendimiento de tu equipo con IA: desglose automático de tareas, asignación inteligente y análisis predictivo
-          </p>
-          <SignIn />
-        </div>
-      </SignedOut>
-
       <SignedIn>
         <div className="container space-y-6">
           <div className="flex justify-between items-center">
@@ -143,7 +133,6 @@ export default function Home() {
                       <div className="flex items-center space-x-4 p-4 hover:bg-muted rounded-lg transition-colors">
                         <div className="flex-1">
                           <h3 className="font-medium">{epic.title}</h3>
-                          <p className="text-sm text-muted-foreground">{epic.description}</p>
                           <Progress value={(epic.numberOfTaskCompleted / epic.numberOfTasks) * 100} className="mt-2" />
                         </div>
                         <Badge>

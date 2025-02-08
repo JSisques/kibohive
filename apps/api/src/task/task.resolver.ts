@@ -1,12 +1,13 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { TaskService } from './task.service';
 import { Logger } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskDto } from './dto/task.dto';
 import { UpdateTaskStatusDto } from './dto/update-task-status.dto';
+import { TaskStatus } from '@prisma/client';
 
-@Resolver()
+@Resolver(() => TaskDto)
 export class TaskResolver {
   private readonly logger;
   constructor(private readonly taskService: TaskService) {
@@ -14,9 +15,19 @@ export class TaskResolver {
   }
 
   @Query(() => [TaskDto])
-  async getTasks() {
-    this.logger.log('Entering getTasks()');
+  async getTasks(
+    @Args('page', { type: () => Int, nullable: true }) page?: number,
+    @Args('limit', { type: () => Int, nullable: true }) limit?: number,
+  ) {
+    if (page && limit) {
+      return this.taskService.getTasks({ page, limit });
+    }
     return this.taskService.getTasks();
+  }
+
+  @Query(() => Int)
+  async tasksCount() {
+    return this.taskService.getTasksCount();
   }
 
   @Query(() => TaskDto)
