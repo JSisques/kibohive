@@ -11,6 +11,7 @@ import { UserDto } from 'src/user/dto/user.dto';
 import { EpicDto } from 'src/epic/dto/epic.dto';
 import { TaskStatus } from '@prisma/client';
 import '../enums/task-status.enum';
+import { TaskCommentDto } from './task-comment.dto';
 
 @ObjectType('Task')
 export class TaskDto {
@@ -69,4 +70,8 @@ export class TaskDto {
   @IsOptional()
   @IsString()
   assignmentReason?: string;
+
+  @Field(() => [TaskCommentDto], { nullable: true })
+  @IsOptional()
+  comments?: TaskCommentDto[];
 }

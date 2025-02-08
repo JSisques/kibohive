@@ -6,7 +6,9 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskDto } from './dto/task.dto';
 import { UpdateTaskStatusDto } from './dto/update-task-status.dto';
 import { TaskStatus } from '@prisma/client';
-
+import { TaskCommentDto } from './dto/task-comment.dto';
+import { CreateTaskCommentDto } from './dto/create-task-comment.dto';
+import { UpdateTaskCommentDto } from './dto/update-task-comment.dto';
 @Resolver(() => TaskDto)
 export class TaskResolver {
   private readonly logger;
@@ -66,5 +68,36 @@ export class TaskResolver {
       `Entering updateTaskStatus resolver for task ${updateTaskStatusDto.status}`,
     );
     return this.taskService.updateTaskStatus(id, updateTaskStatusDto.status);
+  }
+
+  @Mutation(() => TaskCommentDto)
+  async createTaskComment(
+    @Args('input') createTaskCommentDto: CreateTaskCommentDto,
+  ) {
+    this.logger.log(
+      `Entering createTaskComment(${createTaskCommentDto.comment})`,
+    );
+    return this.taskService.createTaskComment(createTaskCommentDto);
+  }
+
+  @Query(() => [TaskCommentDto])
+  async getTaskComments(@Args('taskId') taskId: string) {
+    this.logger.log(`Entering getTaskComments(${taskId})`);
+    return this.taskService.getTaskComments(taskId);
+  }
+
+  @Mutation(() => TaskCommentDto)
+  async updateTaskComment(
+    @Args('id') id: string,
+    @Args('input') updateTaskCommentDto: UpdateTaskCommentDto,
+  ) {
+    this.logger.log(`Entering updateTaskComment(${id})`);
+    return this.taskService.updateTaskComment(id, updateTaskCommentDto);
+  }
+
+  @Mutation(() => TaskCommentDto)
+  async deleteTaskComment(@Args('id') id: string) {
+    this.logger.log(`Entering deleteTaskComment(${id})`);
+    return this.taskService.deleteTaskComment(id);
   }
 }

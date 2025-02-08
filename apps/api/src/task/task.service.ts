@@ -5,6 +5,8 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskStatus } from '@prisma/client';
 import { UpdateTaskStatusDto } from './dto/update-task-status.dto';
 import { TaskDto } from './dto/task.dto';
+import { CreateTaskCommentDto } from './dto/create-task-comment.dto';
+import { UpdateTaskCommentDto } from './dto/update-task-comment.dto';
 
 interface PaginationParams {
   page: number;
@@ -32,6 +34,11 @@ export class TaskService {
         include: {
           epic: true,
           assignedTo: true,
+          comments: {
+            include: {
+              user: true,
+            },
+          },
         },
       });
     }
@@ -45,6 +52,11 @@ export class TaskService {
       include: {
         epic: true,
         assignedTo: true,
+        comments: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
   }
@@ -60,6 +72,11 @@ export class TaskService {
       include: {
         epic: true,
         assignedTo: true,
+        comments: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
   }
@@ -89,6 +106,11 @@ export class TaskService {
       include: {
         epic: true,
         assignedTo: true,
+        comments: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
   }
@@ -111,6 +133,11 @@ export class TaskService {
       include: {
         epic: true,
         assignedTo: true,
+        comments: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
   }
@@ -122,6 +149,11 @@ export class TaskService {
       include: {
         epic: true,
         assignedTo: true,
+        comments: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
   }
@@ -140,6 +172,11 @@ export class TaskService {
           include: {
             assignedTo: true,
             epic: true,
+            comments: {
+              include: {
+                user: true,
+              },
+            },
           },
         });
       }),
@@ -158,6 +195,65 @@ export class TaskService {
       include: {
         epic: true,
         assignedTo: true,
+        comments: {
+          include: {
+            user: true,
+          },
+        },
+      },
+    });
+  }
+
+  async createTaskComment(createTaskCommentDto: CreateTaskCommentDto) {
+    this.logger.log(
+      `Entering createTaskComment(${createTaskCommentDto.comment})`,
+    );
+    return this.prisma.taskComment.create({
+      data: {
+        ...createTaskCommentDto,
+        comment: createTaskCommentDto.comment.trim(),
+      },
+      include: {
+        user: true,
+      },
+    });
+  }
+
+  async getTaskComments(taskId: string) {
+    this.logger.log(`Entering getTaskComments(${taskId})`);
+    return this.prisma.taskComment.findMany({
+      where: { taskId },
+      include: {
+        user: true,
+      },
+    });
+  }
+
+  async updateTaskComment(
+    id: string,
+    updateTaskCommentDto: UpdateTaskCommentDto,
+  ) {
+    this.logger.log(
+      `Entering updateTaskComment(${updateTaskCommentDto.comment})`,
+    );
+    return this.prisma.taskComment.update({
+      where: { id },
+      data: {
+        ...updateTaskCommentDto,
+        comment: updateTaskCommentDto.comment.trim(),
+      },
+      include: {
+        user: true,
+      },
+    });
+  }
+
+  async deleteTaskComment(id: string) {
+    this.logger.log(`Entering deleteTaskComment(${id})`);
+    return this.prisma.taskComment.delete({
+      where: { id },
+      include: {
+        user: true,
       },
     });
   }

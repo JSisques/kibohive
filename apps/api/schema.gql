@@ -31,6 +31,12 @@ input CreatePromptInput {
   name: String!
 }
 
+input CreateTaskCommentInput {
+  comment: String!
+  taskId: String!
+  userId: String!
+}
+
 input CreateTaskInput {
   assignedToId: String
   companyId: String!
@@ -89,11 +95,13 @@ type Mutation {
   createEpic(autoAssign: Boolean!, input: CreateEpicInput!, useAI: Boolean!): Epic!
   createPrompt(input: CreatePromptInput!): Prompt!
   createTask(input: CreateTaskInput!): Task!
+  createTaskComment(input: CreateTaskCommentInput!): TaskComment!
   createUser(input: CreateUserInput!): User!
   deleteCompany(id: String!): Company!
   deleteEpic(id: String!): Epic!
   deletePrompt(id: String!): Prompt!
   deleteTask(id: String!): Task!
+  deleteTaskComment(id: String!): TaskComment!
   deleteUser(id: String!): User!
   deleteUserSkill(skillId: String!, userId: String!): UserSkill!
   executeUserQuery(input: CreateUserQueryInput!): UserQuery!
@@ -101,6 +109,7 @@ type Mutation {
   updateEpic(id: String!, input: UpdateEpicInput!): Epic!
   updatePrompt(id: String!, input: CreatePromptInput!): Prompt!
   updateTask(id: String!, input: UpdateTaskInput!): Task!
+  updateTaskComment(id: String!, input: UpdateTaskCommentInput!): TaskComment!
   updateTaskStatus(id: String!, input: UpdateTaskStatusDto!): Task!
   updateUser(id: String!, input: UpdateUserInput!): User!
   updateUserSkill(skill: UpdateUserSkillInput!, skillId: String!, userId: String!): UserSkill!
@@ -125,6 +134,7 @@ type Query {
   getPromptByName(name: String!): Prompt!
   getPrompts: [Prompt!]!
   getTaskById(id: String!): Task!
+  getTaskComments(taskId: String!): [TaskComment!]!
   getTasks(limit: Int, page: Int): [Task!]!
   getUserByClerkId(clerkId: String!): User!
   getUserById(id: String!): User!
@@ -137,6 +147,7 @@ type Task {
   assignedTo: User
   assignedToId: String
   assignmentReason: String
+  comments: [TaskComment!]
   createdAt: DateTime!
   deletedAt: DateTime
   description: String
@@ -146,6 +157,16 @@ type Task {
   status: TaskStatus!
   title: String!
   updatedAt: DateTime!
+}
+
+type TaskComment {
+  comment: String!
+  createdAt: DateTime!
+  id: String!
+  taskId: String!
+  updatedAt: DateTime!
+  user: User!
+  userId: String!
 }
 
 """Estado de la tarea"""
@@ -166,6 +187,10 @@ input UpdateEpicInput {
   endDate: String!
   startDate: String!
   title: String!
+}
+
+input UpdateTaskCommentInput {
+  comment: String!
 }
 
 input UpdateTaskInput {

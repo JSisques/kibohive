@@ -35,7 +35,6 @@ import {
 } from '@/components/ui/sidebar';
 
 import { useRouter } from 'next/navigation';
-import { signOut } from 'next-auth/react';
 import { SignInButton, SignOutButton, useAuth, useOrganization, UserButton, useUser } from '@clerk/nextjs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
@@ -203,13 +202,7 @@ const AppSidebar = () => {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton
-                  onClick={() => {
-                    signOut({
-                      callbackUrl: '/login',
-                    });
-                  }}
-                >
+                <SidebarMenuButton>
                   <LogOut className="mr-2 h-4 w-4" />
                   <SignOutButton />
                 </SidebarMenuButton>

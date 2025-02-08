@@ -37,7 +37,11 @@ export class CompanyService {
       include: {
         epics: {
           include: {
-            tasks: true,
+            tasks: {
+              include: {
+                comments: true,
+              },
+            },
             _count: {
               select: {
                 tasks: true,

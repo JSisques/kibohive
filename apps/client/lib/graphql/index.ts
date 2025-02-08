@@ -8,7 +8,7 @@ export * from './company/mutations';
 
 // Tasks
 export * from './tasks/queries';
-
+export * from './tasks/mutations';
 // User
 export * from './user/queries';
 

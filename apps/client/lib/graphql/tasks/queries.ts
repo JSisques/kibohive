@@ -40,6 +40,36 @@ export const GET_TASK_BY_ID = gql`
         name
         email
       }
+      comments {
+        id
+        comment
+        createdAt
+        updatedAt
+        userId
+        user {
+          id
+          name
+          email
+        }
+      }
+    }
+  }
+`;
+
+export const GET_TASK_COMMENTS = gql`
+  query GetTaskComments($taskId: String!) {
+    getTaskComments(taskId: $taskId) {
+      id
+      comment
+      createdAt
+      updatedAt
+      userId
+      taskId
+      user {
+        id
+        name
+        email
+      }
     }
   }
 `;
