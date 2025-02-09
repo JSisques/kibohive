@@ -19,6 +19,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import TaskModal from '@/components/organisms/taskModal/task-modal';
 
 interface Task {
   id: string;
@@ -74,9 +75,9 @@ const TasksPage = () => {
             <h1 className="text-3xl font-bold">Tareas</h1>
             <p className="text-muted-foreground">Gestiona y visualiza todas las tareas del proyecto</p>
           </div>
-          <Badge variant="secondary" className="px-4 py-2 text-sm">
-            {data?.getTasks.length || 0} tareas
-          </Badge>
+          <div className="flex items-center gap-4">
+            <TaskModal />
+          </div>
         </div>
 
         <div className="relative">
