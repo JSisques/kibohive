@@ -19,6 +19,8 @@ import {
   Table,
   SquareChartGantt,
   MessageSquareMore,
+  Book,
+  BookText,
 } from 'lucide-react';
 
 import {
@@ -82,6 +84,12 @@ const AppSidebar = () => {
                 <SidebarMenuButton onClick={() => router.push('/ai-assistant')}>
                   <MessageSquareMore className="mr-2 h-4 w-4" />
                   <span>Chat Asistente</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton onClick={() => router.push('/reports')}>
+                  <BookText className="mr-2 h-4 w-4" />
+                  <span>Informes</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
