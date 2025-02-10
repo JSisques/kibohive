@@ -49,7 +49,7 @@ const AIAssistantPage = () => {
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] w-full">
       {/* Header */}
-      <div className="border-b py-4 flex items-center gap-2 bg-background">
+      <div className="border-b pb-4 flex items-center gap-2 bg-background">
         <div className="flex flex-col">
           <div className="flex items-center gap-2">
             <MessageSquareMore className="h-5 w-5 text-muted-foreground" />
