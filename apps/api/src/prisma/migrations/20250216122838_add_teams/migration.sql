@@ -13,7 +13,8 @@ ADD COLUMN     "teamId" TEXT;
 ALTER TABLE "Prompt" ADD COLUMN     "deletedAt" TIMESTAMP(3);
 
 -- AlterTable
-ALTER TABLE "Task" ADD COLUMN     "idx_team" TEXT NOT NULL DEFAULT 'default-team';
+ALTER TABLE "Task" ADD COLUMN     "idx_team" TEXT NOT NULL DEFAULT '',
+ALTER COLUMN "idx_assignedTo" SET DEFAULT '';
 
 -- AlterTable
 ALTER TABLE "TaskComment" ADD COLUMN     "deletedAt" TIMESTAMP(3);
