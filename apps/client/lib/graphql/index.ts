@@ -14,3 +14,7 @@ export * from './user/queries';
 
 // AI Assistant
 export * from './ai-assistant/mutations';
+
+// Team
+export * from './team/queries';
+export * from './team/mutations';
