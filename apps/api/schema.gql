@@ -48,6 +48,12 @@ input CreateTaskInput {
   title: String!
 }
 
+input CreateTeamInput {
+  companyId: String!
+  description: String
+  name: String!
+}
+
 input CreateUserInput {
   clerkId: String!
   companyId: String!
@@ -96,12 +102,14 @@ type Mutation {
   createPrompt(input: CreatePromptInput!): Prompt!
   createTask(input: CreateTaskInput!): Task!
   createTaskComment(input: CreateTaskCommentInput!): TaskComment!
+  createTeam(createTeamDto: CreateTeamInput!): Team!
   createUser(input: CreateUserInput!): User!
   deleteCompany(id: String!): Company!
   deleteEpic(id: String!): Epic!
   deletePrompt(id: String!): Prompt!
   deleteTask(id: String!): Task!
   deleteTaskComment(id: String!): TaskComment!
+  deleteTeam(teamId: String!): Team!
   deleteUser(id: String!): User!
   deleteUserSkill(skillId: String!, userId: String!): UserSkill!
   executeUserQuery(input: CreateUserQueryInput!): UserQuery!
@@ -111,6 +119,7 @@ type Mutation {
   updateTask(id: String!, input: UpdateTaskInput!): Task!
   updateTaskComment(id: String!, input: UpdateTaskCommentInput!): TaskComment!
   updateTaskStatus(id: String!, input: UpdateTaskStatusDto!): Task!
+  updateTeam(teamId: String!, updateTeamDto: UpdateTeamInput!): Team!
   updateUser(id: String!, input: UpdateUserInput!): User!
   updateUserSkill(skill: UpdateUserSkillInput!, skillId: String!, userId: String!): UserSkill!
 }
@@ -136,6 +145,9 @@ type Query {
   getTaskById(id: String!): Task!
   getTaskComments(taskId: String!): [TaskComment!]!
   getTasks(limit: Int, page: Int): [Task!]!
+  getTeamById(teamId: String!): Team!
+  getTeams: [Team!]!
+  getTeamsByCompanyId(companyId: String!): [Team!]!
   getUserByClerkId(clerkId: String!): User!
   getUserById(id: String!): User!
   getUserSkills(userId: String!): [UserSkill!]!
@@ -176,6 +188,24 @@ enum TaskStatus {
   TODO
 }
 
+type Team {
+  companyId: String!
+  createdAt: DateTime!
+  deletedAt: DateTime
+  description: String
+  id: String!
+  members: [TeamMember!]!
+  name: String!
+  updatedAt: DateTime!
+}
+
+type TeamMember {
+  id: String!
+  teamId: String!
+  user: User!
+  userId: String!
+}
+
 input UpdateCompanyInput {
   businessRules: String
   name: String
@@ -199,6 +229,11 @@ input UpdateTaskInput {
 
 input UpdateTaskStatusDto {
   status: String!
+}
+
+input UpdateTeamInput {
+  description: String
+  name: String!
 }
 
 input UpdateUserInput {
