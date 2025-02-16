@@ -14,6 +14,7 @@ import { CompanyModule } from './company/company.module';
 import { IAModule } from './ia/ia.module';
 import { AiAssistantModule } from './ai-assistant/ai-assistant.module';
 import { PromptModule } from './prompt/prompt.module';
+import { TeamModule } from './team/team.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { PromptModule } from './prompt/prompt.module';
     IAModule,
     AiAssistantModule,
     PromptModule,
+    TeamModule,
   ],
   controllers: [AppController],
   providers: [AppService],
