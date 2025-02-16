@@ -20,11 +20,13 @@ model User {
   name        String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
   company     Company?  @relation(fields: [companyId], references: [id])
   companyId   String?
   skills      UserSkill[]
   tasks       Task[]    @relation("AssignedTasks")
   comments    TaskComment[]
+  teams       TeamMember[]
 }
 
 model Company {
@@ -35,8 +37,45 @@ model Company {
   businessRules String?  @db.Text
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
   members     User[]
   epics       Epic[]
+  teams       Team[]
+}
+
+model Team {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  company     Company   @relation(fields: [companyId], references: [id])
+  companyId   String
+  members     TeamMember[]
+  epics       Epic[]
+  tasks       Task[]
+
+  @@unique([name, companyId])
+}
+
+model TeamMember {
+  id          String    @id @default(uuid())
+  team        Team      @relation(fields: [teamId], references: [id])
+  teamId      String
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+  role        TeamRole  @default(MEMBER)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  @@unique([teamId, userId])
+}
+
+enum TeamRole {
+  ADMIN
+  MEMBER
 }
 
 model Epic {
@@ -45,9 +84,13 @@ model Epic {
   description String
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
   company     Company   @relation(fields: [companyId], references: [id])
   companyId   String
+  team        Team?     @relation(fields: [teamId], references: [id])
+  teamId      String?
   tasks       Task[]
+  isCompanyWide Boolean @default(false)
 }
 
 model Task {
@@ -56,12 +99,14 @@ model Task {
   description     String
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime?
   epic            Epic      @relation(fields: [epicId], references: [id])
   epicId          String    @default("") @map("idx_epic")
+  team            Team      @relation(fields: [teamId], references: [id])
+  teamId          String    @default("") @map("idx_team")
   assignedTo      User?     @relation("AssignedTasks", fields: [assignedToId], references: [id])
-  assignedToId    String?   @map("idx_assignedTo")
+  assignedToId    String?   @default("") @map("idx_assignedTo")
   status          TaskStatus @default(TODO)
-  deletedAt       DateTime?
   assignmentReason String?  @db.Text
   comments        TaskComment[]
 }
@@ -73,6 +118,7 @@ model TaskComment {
   comment     String
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
   user        User      @relation(fields: [userId], references: [id])
   userId      String
 }
@@ -91,6 +137,7 @@ model UserSkill {
   userId      String
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
 
   @@unique([userId, name])
 }
@@ -101,4 +148,5 @@ model Prompt {
   description String
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
 }
