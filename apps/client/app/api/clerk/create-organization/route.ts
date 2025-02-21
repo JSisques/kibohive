@@ -1,25 +1,23 @@
 import { graphqlClient } from '@/lib/graphql/apollo-client';
 import { CREATE_COMPANY } from '@/lib/graphql/company/mutations';
-import { CREATE_USER } from '@/lib/graphql/user/mutations';
-import { ClerkUserCreated } from '@/types';
 import { ClerkOrganizationCreated } from '@/types/clerk/organization-created';
 
 /**
- * Maneja el webhook de registro de usuarios de Clerk
+ * Maneja el webhook de creación de organizaciones de Clerk
  *
- * Esta función se ejecuta cuando un nuevo usuario se registra a través de Clerk.
- * Recibe los datos del usuario creado en Clerk y los utiliza para crear un nuevo
- * usuario en nuestra base de datos a través de una mutación GraphQL.
+ * Esta función se ejecuta cuando se crea una nueva organización a través de Clerk.
+ * Recibe los datos de la organización creada en Clerk y los utiliza para crear una nueva
+ * compañía en nuestra base de datos a través de una mutación GraphQL.
  *
- * @param request - Objeto Request que contiene los datos del usuario creado en Clerk
- * @returns Response con mensaje de éxito
+ * @param request - Objeto Request que contiene los datos de la organización creada en Clerk
+ * @returns Response con mensaje de éxito o error
  *
  * El flujo es:
  * 1. Extrae el payload del request
- * 2. Convierte el payload al tipo ClerkUserCreated
- * 3. Extrae los datos relevantes (email, id, nombre) del usuario
- * 4. Ejecuta mutación GraphQL para crear el usuario en nuestra BD
- * 5. Retorna respuesta de éxito
+ * 2. Convierte el payload al tipo ClerkOrganizationCreated
+ * 3. Extrae los datos relevantes (nombre, slug, id) de la organización
+ * 4. Ejecuta mutación GraphQL para crear la compañía en nuestra BD
+ * 5. Retorna respuesta de éxito o error según el resultado
  */
 export async function POST(request: Request) {
   const payload = await request.json();
