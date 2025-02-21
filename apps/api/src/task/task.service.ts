@@ -95,6 +95,11 @@ export class TaskService {
             id: createTaskDto.epicId,
           },
         },
+        team: {
+          connect: {
+            id: createTaskDto.teamId,
+          },
+        },
         assignedTo: createTaskDto.assignedToId
           ? {
               connect: {

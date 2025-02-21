@@ -36,6 +36,11 @@ export class CreateTaskDto {
   @Field()
   @IsNotEmpty()
   @IsUUID()
+  teamId: string;
+
+  @Field()
+  @IsNotEmpty()
+  @IsUUID()
   companyId: string;
 
   @Field({ nullable: true })

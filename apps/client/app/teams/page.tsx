@@ -96,9 +96,12 @@ const TeamsPage = () => {
   };
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Gestión de Equipos</h1>
+        <div>
+          <h1 className="text-3xl font-bold">Gestión de Equipos</h1>
+          <p className="text-muted-foreground mt-2">Crea y gestiona los equipos de tu organización</p>
+        </div>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
             <Button>Crear Equipo</Button>
@@ -124,25 +127,29 @@ const TeamsPage = () => {
         </Dialog>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="space-y-2">
         {teams.map(team => (
-          <Card key={team.id}>
-            <CardHeader>
-              <CardTitle>{team.name}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-500 mb-4">{team.description || 'Sin descripción'}</p>
-              <div className="flex space-x-2">
-                <Button variant="outline" onClick={() => handleEdit(team)}>
-                  Editar
-                </Button>
-                <Button variant="destructive" onClick={() => handleDelete(team.id)}>
-                  Eliminar
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          <div
+            key={team.id}
+            className="flex items-center justify-between p-4 rounded-lg border bg-card text-card-foreground hover:bg-accent/50 transition-colors"
+          >
+            <div className="flex-1">
+              <h3 className="font-semibold">{team.name}</h3>
+              <p className="text-sm text-muted-foreground mt-1">{team.description || 'Sin descripción'}</p>
+            </div>
+            <div className="flex items-center gap-2 ml-4">
+              <Button variant="outline" size="sm" onClick={() => handleEdit(team)}>
+                Editar
+              </Button>
+              <Button variant="destructive" size="sm" onClick={() => handleDelete(team.id)}>
+                Eliminar
+              </Button>
+            </div>
+          </div>
         ))}
+        {teams.length === 0 && (
+          <div className="text-center py-8 text-muted-foreground">No hay equipos creados. Crea tu primer equipo haciendo clic en "Crear Equipo".</div>
+        )}
       </div>
     </div>
   );

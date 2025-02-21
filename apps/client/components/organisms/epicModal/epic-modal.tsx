@@ -36,6 +36,7 @@ const EpicModal = ({ companyId }: EpicModalProps) => {
             title: title,
             description: description,
             clerkCompanyId: user?.organizationMemberships[0].organization.id as string,
+            teamId: user,
           },
           autoAssign: autoAssign,
           useAI: useAI,

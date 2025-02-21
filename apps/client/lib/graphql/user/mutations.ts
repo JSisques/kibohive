@@ -1,5 +1,12 @@
 import { gql } from '@apollo/client';
 
+export const CREATE_USER = gql`
+  mutation CreateUser($input: CreateUserInput!) {
+    createUser(input: $input) {
+      id
+    }
+  }
+`;
 export const UPDATE_USER_SKILL = gql`
   mutation UpdateUserSkill($userId: String!, $skillId: String!, $skill: UpdateUserSkillInput!) {
     updateUserSkill(userId: $userId, skillId: $skillId, skill: $skill) {

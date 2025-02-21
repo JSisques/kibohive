@@ -25,4 +25,9 @@ export class CreateEpicDto {
   @IsNotEmpty()
   @IsString()
   clerkCompanyId: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsUUID()
+  teamId?: string;
 }

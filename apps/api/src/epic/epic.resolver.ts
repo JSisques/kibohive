@@ -81,6 +81,7 @@ export class EpicResolver {
           dueDate: task.dueDate,
           epicId: epic.id,
           companyId: company.id,
+          teamId: input.teamId,
         };
 
         inputTasks.push(inputTask);

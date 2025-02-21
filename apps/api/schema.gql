@@ -23,6 +23,7 @@ input CreateCompanyInput {
 input CreateEpicInput {
   clerkCompanyId: String!
   description: String
+  teamId: String
   title: String!
 }
 
@@ -45,6 +46,7 @@ input CreateTaskInput {
   dueDate: String
   epicId: String
   status: TaskStatus
+  teamId: String!
   title: String!
 }
 
