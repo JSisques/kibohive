@@ -1,5 +1,5 @@
 'use client';
-import { useUser } from '@clerk/nextjs';
+import { useUser, SignOutButton } from '@clerk/nextjs';
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -158,6 +158,21 @@ const Profile = () => {
               No tienes habilidades registradas aún. Un administrador puede añadirlas desde tu perfil público.
             </div>
           )}
+        </CardContent>
+      </Card>
+
+      {/* Cerrar Sesión */}
+      <Card className="bg-destructive/10">
+        <CardContent className="pt-6">
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <h4 className="font-medium">Cerrar Sesión</h4>
+              <p className="text-sm text-muted-foreground">Cierra la sesión en este dispositivo</p>
+            </div>
+            <SignOutButton>
+              <Button variant="destructive">Cerrar Sesión</Button>
+            </SignOutButton>
+          </div>
         </CardContent>
       </Card>
     </div>

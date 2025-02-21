@@ -10,7 +10,6 @@ import {
   BarChart2,
   Settings,
   HelpCircle,
-  LogOut,
   Layers,
   ListTodo,
   UserCircle,
@@ -37,7 +36,7 @@ import {
 } from '@/components/ui/sidebar';
 
 import { useRouter } from 'next/navigation';
-import { SignInButton, SignOutButton, useAuth, useOrganization, UserButton, useUser } from '@clerk/nextjs';
+import { SignInButton, useAuth, useOrganization, UserButton, useUser } from '@clerk/nextjs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const AppSidebar = () => {
@@ -46,14 +45,13 @@ const AppSidebar = () => {
 
   return (
     <Sidebar>
-      <SidebarHeader className="space-y-4 py-4">
+      <SidebarHeader className="p-4">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton className="h-fit" onClick={() => router.push('/profile')}>
-              <UserButton />
-              <div className="flex flex-col">
-                <span>{`${user?.firstName} ${user?.lastName}`}</span>
-                <span>{user?.emailAddresses[0].emailAddress}</span>
+            <SidebarMenuButton className="flex items-center justify-center" onClick={() => router.push('/')}>
+              <div className="flex items-center space-x-2">
+                {/* Aquí puedes añadir tu logo como imagen */}
+                <span className="text-2xl font-bold">Kibo</span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -61,20 +59,6 @@ const AppSidebar = () => {
       </SidebarHeader>
 
       <SidebarContent>
-        {/* Vista General */}
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton onClick={() => router.push('/')}>
-                  <Home className="mr-2 h-4 w-4" />
-                  <span>Panel Principal</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
         {/* Asistente IA */}
         <SidebarGroup>
           <SidebarGroupLabel>Asistente IA</SidebarGroupLabel>
@@ -111,39 +95,6 @@ const AppSidebar = () => {
                 <SidebarMenuButton onClick={() => router.push('/tasks')}>
                   <ListTodo className="mr-2 h-4 w-4" />
                   <span>Tareas</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        {/* Vistas de Trabajo */}
-        <SidebarGroup>
-          <SidebarGroupLabel>Vistas de Trabajo</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton onClick={() => router.push('/kanban')}>
-                  <Kanban className="mr-2 h-4 w-4" />
-                  <span>Kanban</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton onClick={() => router.push('/table')}>
-                  <Table className="mr-2 h-4 w-4" />
-                  <span>Tabla</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton onClick={() => router.push('/calendar')}>
-                  <Calendar className="mr-2 h-4 w-4" />
-                  <span>Calendario</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton onClick={() => router.push('/timeline')}>
-                  <SquareChartGantt className="mr-2 h-4 w-4" />
-                  <span>Cronograma</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -198,6 +149,12 @@ const AppSidebar = () => {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
+                <SidebarMenuButton className="h-fit" onClick={() => router.push('/profile')}>
+                  <UserButton />
+                  <span>{`${user?.firstName} ${user?.lastName}`}</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
                 <SidebarMenuButton onClick={() => router.push('/settings')}>
                   <Settings className="mr-2 h-4 w-4" />
                   <span>Configuración</span>
@@ -207,12 +164,6 @@ const AppSidebar = () => {
                 <SidebarMenuButton onClick={() => router.push('/help')}>
                   <HelpCircle className="mr-2 h-4 w-4" />
                   <span>Ayuda</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <SignOutButton />
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
