@@ -4,14 +4,14 @@
 
 type Company {
   businessRules: String
-  clerkId: String!
-  createdAt: DateTime!
+  clerkId: String
+  createdAt: DateTime
   epics: [Epic!]
-  id: String!
+  id: String
   members: [User!]
-  name: String!
-  subdomain: String!
-  updatedAt: DateTime!
+  name: String
+  subdomain: String
+  updatedAt: DateTime
 }
 
 input CreateCompanyInput {
@@ -58,7 +58,7 @@ input CreateTeamInput {
 
 input CreateUserInput {
   clerkId: String!
-  companyId: String!
+  companyId: String
   email: String!
   name: String
 }
@@ -123,6 +123,7 @@ type Mutation {
   updateTaskStatus(id: String!, input: UpdateTaskStatusDto!): Task!
   updateTeam(teamId: String!, updateTeamDto: UpdateTeamInput!): Team!
   updateUser(id: String!, input: UpdateUserInput!): User!
+  updateUserOrganization(clerkCompanyId: String!, clerkUserId: String!): User!
   updateUserSkill(skill: UpdateUserSkillInput!, skillId: String!, userId: String!): UserSkill!
 }
 

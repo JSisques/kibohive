@@ -85,4 +85,12 @@ export class UserResolver {
   ) {
     return this.userService.deleteUserSkill(userId, skillId);
   }
+
+  @Mutation(() => UserDto)
+  async updateUserOrganization(
+    @Args('clerkUserId') clerkUserId: string,
+    @Args('clerkCompanyId') clerkCompanyId: string,
+  ) {
+    return this.userService.updateUserOrganization(clerkUserId, clerkCompanyId);
+  }
 }

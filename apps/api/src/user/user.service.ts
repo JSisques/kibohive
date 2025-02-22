@@ -118,4 +118,35 @@ export class UserService {
       },
     });
   }
+
+  async updateUserOrganization(clerkUserId: string, clerkCompanyId: string) {
+    this.logger.log(
+      `Entering updateUserOrganization(${clerkUserId}, ${clerkCompanyId})`,
+    );
+
+    const user = await this.prisma.user.findUnique({
+      where: { clerkId: clerkUserId },
+    });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const company = await this.prisma.company.findUnique({
+      where: { clerkId: clerkCompanyId },
+    });
+
+    if (!company) {
+      throw new Error('Company not found');
+    }
+
+    if (user.companyId === company.id) {
+      throw new Error('User already in this company');
+    }
+
+    return this.prisma.user.update({
+      where: { id: user.id },
+      data: { companyId: company.id },
+    });
+  }
 }

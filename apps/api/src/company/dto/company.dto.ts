@@ -11,40 +11,46 @@ import { UserDto } from 'src/user/dto/user.dto';
 
 @ObjectType('Company')
 export class CompanyDto {
-  @Field()
+  @Field({ nullable: true })
   @IsUUID()
-  @IsNotEmpty()
-  id: string;
+  @IsOptional()
+  id?: string;
 
-  @Field()
+  @Field({ nullable: true })
   @IsString()
-  @IsNotEmpty()
-  clerkId: string;
+  @IsOptional()
+  clerkId?: string;
 
-  @Field()
+  @Field({ nullable: true })
   @IsString()
-  @IsNotEmpty()
-  name: string;
+  @IsOptional()
+  name?: string;
 
   @Field(() => [UserDto], { nullable: true })
+  @IsOptional()
   members?: UserDto[];
 
   @Field(() => [EpicDto], { nullable: true })
+  @IsOptional()
   epics?: EpicDto[];
 
-  @Field()
+  @Field({ nullable: true })
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  subdomain: string;
+  subdomain?: string;
 
   @Field({ nullable: true })
   @IsOptional()
   @IsString()
   businessRules?: string;
 
-  @Field()
-  createdAt: Date;
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsDate()
+  createdAt?: Date;
 
-  @Field()
-  updatedAt: Date;
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsDate()
+  updatedAt?: Date;
 }

@@ -26,6 +26,7 @@
     "prisma:studio": "prisma studio --schema=src/prisma/schema.prisma",
     "prisma:push": "prisma db push --schema=src/prisma/schema.prisma",
     "prisma:format": "prisma format --schema=src/prisma/schema.prisma",
+    "prisma:reset": "prisma migrate reset --schema=src/prisma/schema.prisma",
     "docker:local": "docker run --name kibo-postgres-local -e POSTGRES_DB=kibo -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:15"
   },
   "dependencies": {

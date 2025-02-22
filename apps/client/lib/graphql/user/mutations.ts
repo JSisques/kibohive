@@ -7,6 +7,15 @@ export const CREATE_USER = gql`
     }
   }
 `;
+
+export const UPDATE_USER = gql`
+  mutation UpdateUser($clerkUserId: String!, $clerkCompanyId: String!) {
+    updateUserOrganization(clerkUserId: $clerkUserId, clerkCompanyId: $clerkCompanyId) {
+      id
+    }
+  }
+`;
+
 export const UPDATE_USER_SKILL = gql`
   mutation UpdateUserSkill($userId: String!, $skillId: String!, $skill: UpdateUserSkillInput!) {
     updateUserSkill(userId: $userId, skillId: $skillId, skill: $skill) {

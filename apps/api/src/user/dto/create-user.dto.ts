@@ -25,8 +25,8 @@ export class CreateUserDto {
   @IsOptional()
   name?: string;
 
-  @Field()
+  @Field({ nullable: true })
   @IsUUID()
-  @IsNotEmpty()
-  companyId: string;
+  @IsOptional()
+  companyId?: string;
 }

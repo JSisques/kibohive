@@ -31,7 +31,6 @@ export async function POST(request: Request) {
       email: userCreated.data.email_addresses[0].email_address,
       clerkId: userCreated.data.id,
       name: userCreated.data.first_name,
-      companyId: '461530e8-6279-45b0-be59-da009f12ee46',
     },
   };
 
